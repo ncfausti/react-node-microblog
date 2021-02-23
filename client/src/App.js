@@ -1,23 +1,43 @@
-import './App.css';
-import React, {useEffect, useState} from 'react'
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
 
-const App = () => {
-    const [testResponse, setTestResponse] = useState("not connected")
-    useEffect(() => {
-        fetch("http://localhost:5001/test")
-            .then(response => response.text())
-            .then(res => setTestResponse(res))
-            .catch(err => {
-                console.log(err)
-            })
-    }, [])
+import Register from './components/register'
+import Login from './components/login'
 
+export default class App extends React.Component {
+  render() {
     return (
-        <div>
-            This is testing the server communication: {testResponse}
-        </div>
-    )
-    
+      <div className="App">
+        <Router>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <Login />
+              )}
+            />
+            <Route
+              exact
+              path="/register"
+              render={() => (
+                <Register />
+              )}
+            />
+            <Route
+              exact
+              path="/login"
+              render={() => (
+                <Login />
+              )}
+            />
+          </Switch>
+        </Router>
+      </div>
+    );
+  }
 }
-
-export default App;
