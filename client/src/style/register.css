@@ -1,0 +1,89 @@
+@media all and (min-width: 480px) {
+  * {
+    box-sizing: border-box;
+  }
+
+  .root {
+    padding: 25px 90px;
+  }
+
+  .topbar {
+    width: 100%;
+    padding: 15px 25px;
+    background-color: rgb(236, 236, 236);
+  }
+
+  .topbar a {
+    text-decoration: none;
+  }
+
+  .topbar-right {
+    float:right;
+  }
+
+  #title {
+    font-size: 20px;
+    font-weight: bold;
+    color:black;
+  }
+
+  #login {
+    margin-right: 16px;
+    color: rgb(32, 32, 32);
+  }
+
+  #signup-active {
+    font-weight: bold;
+    color: black;
+  }
+
+
+  #errMsg {
+    display: none;
+    width: 100%;
+    padding: 5px 25px;
+    background-color: rgb(255, 214, 214);
+    text-align: center;
+    font-size: 15px;
+    color: rgb(100, 0, 0);
+  }
+  
+  .register {
+    padding: 80px 0 0 0;
+  }
+
+  .register form {
+    margin: 0 auto;
+    max-width: 450px;
+  }
+
+  label {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .register input{
+    width: 100%;
+    margin: 20px 0 20px 0;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(100, 170, 255);
+  }
+
+  button:hover {
+    background-color: rgb(81, 147, 228);
+    cursor: pointer;
+  }
+}
