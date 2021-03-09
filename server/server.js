@@ -11,7 +11,7 @@ server.use(express.json());
 
 
 server.get('/test', (req, res) => {
-    res.send("connected");
+  res.send("connected");
 });
 
 server.post('/user', routes.register);
