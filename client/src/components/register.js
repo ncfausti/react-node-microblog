@@ -39,11 +39,10 @@ class Register extends React.Component {
           this.props.history.push({
             pathname: '/login',
             state: {
-              msg: "✔ Registration is successful. Please login using your crendentials."
+              msg: "✔ Registration was successful. Please login using your crendentials."
             }
           });
         }
-
       },
       (error) => {
         console.log(error);
