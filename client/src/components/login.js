@@ -20,15 +20,46 @@ class Login extends React.Component {
       this.setState({
         successMsg: this.props.location.state.msg
       });
-      var successDiv = document.getElementById("successMsg");
+      let successDiv = document.getElementById("successMsg");
       successDiv.style.display = "block";
     }
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log(this.state);
-    // TODO
+    fetch("http://localhost:5001/login",
+		{
+			method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      })
+		}).then(res => res.json())
+    .then(
+      (result) => {
+        let errDiv = document.getElementById("errMsg");
+        let successDiv = document.getElementById("successMsg");
+        if (result.status != "ok") {
+          this.setState({
+            errMsg: result.msg
+          });
+          successDiv.style.display = "none";
+          errDiv.style.display = "block";
+        } else {
+          this.setState({
+            successMsg: result.msg
+          });
+          successDiv.style.display = "block";
+          errDiv.style.display = "none";
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
   }
 
 	render() {
