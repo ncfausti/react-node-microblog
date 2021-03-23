@@ -1,9 +1,34 @@
+/**
+ * Required External Modules
+ */
+
 const cors = require('cors');
 const express = require('express');
+const path = require("path");
+const expressSession = require("express-session");
+const passport = require("passport");
+const Auth0Strategy = require("passport-auth0");
+require("dotenv").config();
 
 var routes = require("./routes.js")
-
 const server = express();
+
+if (server.get("env") === "production") {
+  // Serve secure cookies, requires HTTPS
+  session.cookie.secure = true;
+}
+const port = process.env.PORT || "5002";
+
+// Session Configuration object passed into express-session
+const session = {
+  secret: process.env.SESSION_SECRET,
+  cookie: {},
+  // forces the session to be saved back to the session store, even 
+  // if the application doesn't modify the session during the request. 
+  // For Auth0 Passport.js strategy, we need this to be false.
+  resave: false,
+  saveUninitialized: false
+};
 
 server.use(cors());
 server.options('*', cors());
@@ -16,5 +41,36 @@ server.get('/test', (req, res) => {
 
 server.post('/user', routes.register);
 server.post('/login', routes.login);
-
 server.listen(5001, () => console.log("server listening on port 5001"));
+
+/**
+ * Passport Configuration
+ */
+
+ const strategy = new Auth0Strategy(
+  {
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    callbackURL: process.env.AUTH0_CALLBACK_URL
+  },
+  function(accessToken, refreshToken, extraParams, profile, done) {
+    /**
+     * Access tokens are used to authorize users to an API
+     * (resource server)
+     * accessToken is the token to call the Auth0 API
+     * or a secured third-party API
+     * extraParams.id_token has the JSON Web Token
+     * profile has all the information from the user
+     */
+    return done(null, profile);
+  }
+);
+
+/**
+ * App configuration for passport
+ **/ 
+server.set("views", path.join(__dirname, "views"));
+server.set("view engine", "pug");
+server.use(express.static(path.join(__dirname, "public")));
+server.use(expressSession(session));
