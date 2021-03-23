@@ -1,4 +1,4 @@
-const register = (req, res) => {
+function register(req, res){
   if (req.body.username != "test") {
     res.status(400).json({
       status: "err",
@@ -12,7 +12,7 @@ const register = (req, res) => {
   }
 };
 
-const login = (req, res) => {
+function login(req, res){
   if (req.body.username != "test") {
     res.status(400).json({
       status: "err",
@@ -26,7 +26,4 @@ const login = (req, res) => {
   }
 };
 
-module.exports = {
-  register: register,
-  login: login
-}
+export{ register, login }

@@ -1,9 +1,10 @@
-const cors = require('cors');
-const express = require('express');
+import cors from 'cors'
+import express from 'express'
 
-var routes = require("./routes.js")
+const {register, login} = require('./routes.js')
 
 const server = express();
+
 
 server.use(cors());
 server.options('*', cors());
@@ -14,7 +15,8 @@ server.get('/test', (req, res) => {
   res.send("connected");
 });
 
-server.post('/user', routes.register);
-server.post('/login', routes.login);
+server.post('/user', register);
+server.post('/login', login);
 
-server.listen(5001, () => console.log("server listening on port 5001"));
+export default server;
+
