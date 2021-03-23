@@ -10,13 +10,20 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "4.0.2",
-    "web-vitals": "^1.1.0"
+    "web-vitals": "^1.1.0",
+    "fetch-mock": "^9.10.7",
+    "isomorphic-fetch": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-fetch-mock": "^3.0.3",
+    "geckodriver": "^1.22.2",
+    "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint \"./**/*.js\"",
+    "test": "jest --coverage"
   },
   "eslintConfig": {
     "extends": [
@@ -35,5 +42,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.13.10",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.22.0"
   }
 }
