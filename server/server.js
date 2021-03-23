@@ -1,7 +1,3 @@
-/**
- * Required External Modules
- */
-
 const cors = require('cors');
 const express = require('express');
 const path = require("path");
@@ -68,9 +64,21 @@ server.listen(5001, () => console.log("server listening on port 5001"));
 );
 
 /**
- * App configuration for passport
+ * Server configuration for passport
  **/ 
 server.set("views", path.join(__dirname, "views"));
 server.set("view engine", "pug");
 server.use(express.static(path.join(__dirname, "public")));
 server.use(expressSession(session));
+passport.use(strategy);
+server.use(passport.initialize());
+server.use(passport.session());
+
+// For sending and receiving values over the wire
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
