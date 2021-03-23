@@ -2,14 +2,15 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Switch
+  Switch,
 } from 'react-router-dom';
 
-import Register from './components/register'
-import Login from './components/login'
-import Messaging from './components/messaging'
+import Register from './components/register';
+import Login from './components/login';
+import Messaging from './components/messaging';
 
 export default class App extends React.Component {
+  // eslint-disable-next-line class-methods-use-this
   render() {
     return (
       <div className="App">
