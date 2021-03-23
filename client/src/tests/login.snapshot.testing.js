@@ -1,4 +1,4 @@
-// Link.react.test.js
+/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import LoginWithRouter from '../components/login';

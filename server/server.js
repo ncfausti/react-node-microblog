@@ -1,7 +1,7 @@
 import cors from 'cors'
 import express from 'express'
 
-const {register, login} = require('./routes.js')
+import { register, login } from './routes.js';
 
 const server = express();
 
