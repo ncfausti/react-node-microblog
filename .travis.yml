@@ -8,5 +8,5 @@ branches:
   - master
 
 script:
-  - cd client && npm ci && npm run lint && npm run test
-  - cd server && npm ci && npm run lint && npm run test
+  - cd $TRAVIS_BUILD_DIR/client && npm ci && npm run lint && npm run test
+  - cd $TRAVIS_BUILD_DIR/server && npm ci && npm run lint && npm run test
