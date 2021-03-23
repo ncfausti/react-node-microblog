@@ -1,29 +1,31 @@
-function register(req, res){
-  if (req.body.username != "test") {
+const register = (req, res) => {
+  if (req.body.username != 'test') {
     res.status(400).json({
-      status: "err",
-      msg: "✖ Registration failed: Invalid username or password provided."
+      status: 'err',
+      msg: '✖ Registration failed: Invalid username or password provided.',
     });
   } else {
     res.status(201).json({
-      status: "ok",
-      msg: "Registration was successfull."
+      status: 'ok',
+      msg: 'Registration was successfull.',
     });
   }
 };
 
-function login(req, res){
-  if (req.body.username != "test") {
+const login = (req, res) => {
+  if (req.body.username != 'test') {
     res.status(400).json({
-      status: "err",
-      msg: "✖ Login failed: Invalid username or password provided."
+      status: 'err',
+      msg: '✖ Login failed: Invalid username or password provided.',
     });
   } else {
     res.status(201).json({
-      status: "ok",
-      msg: "Login was successfull."
+      status: 'ok',
+      msg: 'Login was successfull.',
     });
   }
 };
 
-export{ register, login }
+module.exports = {
+  register, login,
+};
