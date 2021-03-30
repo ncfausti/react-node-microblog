@@ -1,3 +1,9 @@
+const mysql = require('mysql');
+const config = require('./db-config.js');
+
+config.connectionLimit = 20;
+const connection = mysql.createPool(config);
+
 const register = (req, res) => {
   if (req.body.username != 'test') {
     res.status(400).json({
@@ -26,6 +32,21 @@ const login = (req, res) => {
   }
 };
 
+const dbTest = (req, res) => {
+  const name = req.query.name || 'default';
+  const query = `
+    INSERT INTO Test (s_name)
+    VALUES ('${name}');
+  `;
+
+  connection.query(query, (err, rows) => {
+    if (err) res.json(err);
+    else {
+      res.json(rows);
+    }
+  });
+};
+
 module.exports = {
-  register, login,
+  register, login, dbTest,
 };

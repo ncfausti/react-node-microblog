@@ -39,6 +39,7 @@ server.get('/test', (req, res) => {
 
 server.post('/user', routes.register);
 server.post('/login', routes.login);
+server.get('/dbtest', routes.dbTest);
 server.listen(port, () => console.log(`server listening on port ${port}`));
 
 /**
