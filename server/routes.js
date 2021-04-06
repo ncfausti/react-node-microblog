@@ -83,13 +83,13 @@ const getUser = (req, res) => {
         status: 'err',
         msg: '✖ Query failed: Internal server error.',
       });
-    } else if (rows.length >= 1){
+    } else if (rows.length >= 1) {
       res.status(200).json(rows[0]);
     } else {
       res.status(404).json({
         status: 'err',
         msg: '✖ Query failed: Username does not exist.',
-      })
+      });
     }
   });
 };
