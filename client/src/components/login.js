@@ -49,7 +49,7 @@ class Login extends React.Component {
             errDiv.style.display = 'block';
           } else {
             this.setState({
-              successMsg: result.msg,
+              successMsg: 'Login was successfull.',
             });
             successDiv.style.display = 'block';
             errDiv.style.display = 'none';
