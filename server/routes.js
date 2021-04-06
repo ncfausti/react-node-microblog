@@ -4,49 +4,116 @@ const config = require('./db-config.js');
 config.connectionLimit = 20;
 const connection = mysql.createPool(config);
 
+const validatePassword = (uesrInput, dbRecord) => uesrInput == dbRecord;
+
+// POST: /user
 const register = (req, res) => {
-  if (req.body.username != 'test') {
+  const { username, password } = req.body;
+  if (!username || !password || username == '' || password == '') {
     res.status(400).json({
       status: 'err',
-      msg: '✖ Registration failed: Invalid username or password provided.',
+      msg: '✖ Registration failed: Username or password cannot be empty.',
     });
-  } else {
-    res.status(201).json({
-      status: 'ok',
-      msg: 'Registration was successfull.',
-    });
+    return;
   }
-};
-
-const login = (req, res) => {
-  if (req.body.username != 'test') {
+  if (username.length > 31 || password.length > 31) {
     res.status(400).json({
       status: 'err',
-      msg: '✖ Login failed: Invalid username or password provided.',
+      msg: '✖ Registration failed: Username or password is too long.',
     });
-  } else {
-    res.status(201).json({
-      status: 'ok',
-      msg: 'Login was successfull.',
-    });
+    return;
   }
-};
-
-const dbTest = (req, res) => {
-  const name = req.query.name || 'default';
   const query = `
-    INSERT INTO Test (s_name)
-    VALUES ('${name}');
+    INSERT INTO User (username, password)
+    VALUES ('${username}', '${password}');
   `;
-
   connection.query(query, (err, rows) => {
-    if (err) res.json(err);
-    else {
-      res.json(rows);
+    if (err) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Registration failed: The username already exists.',
+      });
+    } else {
+      res.status(201).json({
+        status: 'ok',
+        id: rows.insertId,
+      });
+    }
+  });
+};
+
+// POST: /login
+const login = (req, res) => {
+  const { username, password } = req.body;
+  const query = `
+    SELECT password
+    FROM User
+    WHERE username='${username}';
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(500).json({
+        status: 'err',
+        msg: '✖ Login failed: Internal server error.',
+      });
+    } else if (validatePassword(password, rows[0].password)) {
+      res.status(200).json({
+        status: 'ok',
+      });
+    } else {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Login failed: Invalid username or password provided.',
+      });
+    }
+  });
+};
+
+// GET: /user/{username}
+const getUser = (req, res) => {
+  const { username } = req.params;
+  const query = `
+    SELECT *
+    FROM User
+    WHERE username='${username}';
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(500).json({
+        status: 'err',
+        msg: '✖ Query failed: Internal server error.',
+      });
+    } else if (rows.length >= 1){
+      res.status(200).json(rows[0]);
+    } else {
+      res.status(404).json({
+        status: 'err',
+        msg: '✖ Query failed: Username does not exist.',
+      })
+    }
+  });
+};
+
+// GET: /users
+const getUsers = (req, res) => {
+  const limit = req.query.limit || '100';
+  const query = `
+    SELECT *
+    FROM User
+    LIMIT ${limit};
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(500).json({
+        status: 'err',
+        msg: '✖ Query failed: Internal server error.',
+      });
+    } else {
+      res.status(200).json(rows);
     }
   });
 };
 
 module.exports = {
-  register, login, dbTest,
+  register, login, getUser, getUsers,
 };
