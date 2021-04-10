@@ -8,6 +8,7 @@ import {
 import Register from './components/register';
 import Login from './components/login';
 import Messaging from './components/messaging';
+import ResetPassword from './components/reset_password';
 
 export default class App extends React.Component {
   // eslint-disable-next-line class-methods-use-this
@@ -42,6 +43,13 @@ export default class App extends React.Component {
               path="/messaging"
               render={() => (
                 <Messaging />
+              )}
+            />
+            <Route
+              exact
+              path="/password"
+              render={() => (
+                <ResetPassword />
               )}
             />
           </Switch>

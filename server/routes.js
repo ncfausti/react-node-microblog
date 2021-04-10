@@ -8,7 +8,9 @@ const validatePassword = (uesrInput, dbRecord) => uesrInput == dbRecord;
 
 // POST: /user
 const register = (req, res) => {
-  const { username, password } = req.body;
+  const {
+    username, password, nickname, email,
+  } = req.body;
   if (!username || !password || username == '' || password == '') {
     res.status(400).json({
       status: 'err',
@@ -24,8 +26,8 @@ const register = (req, res) => {
     return;
   }
   const query = `
-    INSERT INTO User (username, password)
-    VALUES ('${username}', '${password}');
+    INSERT INTO User (username, password, nickname, email)
+    VALUES ('${username}', '${password}', '${nickname}', '${email}');
   `;
   connection.query(query, (err, rows) => {
     if (err) {
@@ -94,6 +96,36 @@ const getUser = (req, res) => {
   });
 };
 
+// change password
+const resetPsw = (req, res) => {
+  const { username } = req.params;
+  const { password, email } = req.body;
+
+  // verify email address
+  const query = `
+    UPDATE User
+    SET password=${password}
+    WHERE username='${username}' AND email='${email}';
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    } else if (rows.affectedRows > 0) {
+      res.status(200).json({
+        status: 'ok',
+      });
+    } else {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Incorrect combination of username and email.',
+      });
+    }
+  });
+};
+
 // GET: /users
 const getUsers = (req, res) => {
   const limit = req.query.limit || '100';
@@ -115,5 +147,5 @@ const getUsers = (req, res) => {
 };
 
 module.exports = {
-  register, login, getUser, getUsers,
+  register, login, getUser, getUsers, resetPsw,
 };

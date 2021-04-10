@@ -8,6 +8,8 @@ class Register extends React.Component {
     this.state = {
       username: '',
       password: '',
+      email: '',
+      nickname: '',
       errMsg: '',
     };
 
@@ -24,6 +26,8 @@ class Register extends React.Component {
       body: JSON.stringify({
         username: this.state.username,
         password: this.state.password,
+        email: this.state.email,
+        nickname: this.state.nickname,
       }),
     }).then((res) => res.json())
       .then(
@@ -77,6 +81,22 @@ class Register extends React.Component {
               value={this.state.password}
               onChange={(e) => {
                 this.setState({ password: e.target.value });
+              }}/>
+            <label>Email</label>
+            <input
+              type="text"
+              placeholder="Optional"
+              value={this.state.email}
+              onChange={(e) => {
+                this.setState({ email: e.target.value });
+              }}/>
+            <label>Nickname</label>
+            <input
+              type="text"
+              placeholder="Optional"
+              value={this.state.nickname}
+              onChange={(e) => {
+                this.setState({ nickname: e.target.value });
               }}/>
             <button type="submit">
               Register
