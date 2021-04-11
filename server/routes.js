@@ -6,9 +6,13 @@ const connection = mysql.createPool(config);
 
 const validatePassword = (uesrInput, dbRecord) => uesrInput == dbRecord;
 
+const unsuccessfulAttempts = new Map();
+
 // POST: /user
 const register = (req, res) => {
-  const { username, password } = req.body;
+  const {
+    username, password, nickname, email,
+  } = req.body;
   if (!username || !password || username == '' || password == '') {
     res.status(400).json({
       status: 'err',
@@ -24,8 +28,8 @@ const register = (req, res) => {
     return;
   }
   const query = `
-    INSERT INTO User (username, password)
-    VALUES ('${username}', '${password}');
+    INSERT INTO User (username, password, nickname, email)
+    VALUES ('${username}', '${password}', '${nickname}', '${email}');
   `;
   connection.query(query, (err, rows) => {
     if (err) {
@@ -45,6 +49,17 @@ const register = (req, res) => {
 // POST: /login
 const login = (req, res) => {
   const { username, password } = req.body;
+
+  if (unsuccessfulAttempts.has(username)
+      && unsuccessfulAttempts.get(username).cnt >= 5
+      && (Date.now() - unsuccessfulAttempts.get(username).lastAttemp) <= 180000) {
+    res.status(403).json({
+      status: 'err',
+      msg: '✖ Login failed: Too many unsuccessful attempts, please try again later.',
+    });
+    return;
+  }
+
   const query = `
     SELECT password
     FROM User
@@ -60,7 +75,22 @@ const login = (req, res) => {
       res.status(200).json({
         status: 'ok',
       });
+      if (unsuccessfulAttempts.has(username)) {
+        unsuccessfulAttempts.delete(username);
+      }
     } else {
+      if (!unsuccessfulAttempts.has(username)
+          || (Date.now() - unsuccessfulAttempts.get(username).lastAttemp) > 10000) {
+        unsuccessfulAttempts.set(username, {
+          cnt: 1,
+          lastAttemp: Date.now(),
+        });
+      } else {
+        unsuccessfulAttempts.set(username, {
+          cnt: unsuccessfulAttempts.get(username).cnt + 1,
+          lastAttemp: Date.now(),
+        });
+      }
       res.status(400).json({
         status: 'err',
         msg: '✖ Login failed: Invalid username or password provided.',
@@ -94,6 +124,36 @@ const getUser = (req, res) => {
   });
 };
 
+// change password
+const resetPsw = (req, res) => {
+  const { username } = req.params;
+  const { password, email } = req.body;
+
+  // verify email address
+  const query = `
+    UPDATE User
+    SET password=${password}
+    WHERE username='${username}' AND email='${email}';
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    } else if (rows.affectedRows > 0) {
+      res.status(200).json({
+        status: 'ok',
+      });
+    } else {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Incorrect combination of username and email.',
+      });
+    }
+  });
+};
+
 // GET: /users
 const getUsers = (req, res) => {
   const limit = req.query.limit || '100';
@@ -114,6 +174,37 @@ const getUsers = (req, res) => {
   });
 };
 
+// activate / deactivate
+const changeUserActivation = (req, res) => {
+  const { username } = req.params;
+  /* eslint-disable camelcase */
+  const { is_active } = req.body;
+
+  const query = `
+    UPDATE User
+    SET is_active=${is_active}
+    WHERE username='${username}';
+  `;
+  /* eslint-enable camelcase */
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    } else if (rows.affectedRows > 0) {
+      res.status(200).json({
+        status: 'ok',
+      });
+    } else {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    }
+  });
+};
+
 module.exports = {
-  register, login, getUser, getUsers,
+  register, login, getUser, getUsers, resetPsw, changeUserActivation,
 };
