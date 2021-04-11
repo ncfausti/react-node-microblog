@@ -174,6 +174,37 @@ const getUsers = (req, res) => {
   });
 };
 
+// activate / deactivate
+const changeUserActivation = (req, res) => {
+  const { username } = req.params;
+  /* eslint-disable camelcase */
+  const { is_active } = req.body;
+
+  const query = `
+    UPDATE User
+    SET is_active=${is_active}
+    WHERE username='${username}';
+  `;
+  /* eslint-enable camelcase */
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    } else if (rows.affectedRows > 0) {
+      res.status(200).json({
+        status: 'ok',
+      });
+    } else {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Update failed: Invalid information provided.',
+      });
+    }
+  });
+};
+
 module.exports = {
-  register, login, getUser, getUsers, resetPsw,
+  register, login, getUser, getUsers, resetPsw, changeUserActivation,
 };

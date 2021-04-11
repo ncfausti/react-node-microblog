@@ -41,6 +41,7 @@ server.post('/user', routes.register);
 server.post('/login', routes.login);
 server.get('/user/:username', routes.getUser);
 server.put('/user/:username/password', routes.resetPsw);
+server.put('/user/:username/is_active', routes.changeUserActivation);
 server.get('/users', routes.getUsers);
 server.listen(port, () => console.log(`server listening on port ${port}`));
 
