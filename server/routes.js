@@ -6,6 +6,8 @@ const connection = mysql.createPool(config);
 
 const validatePassword = (uesrInput, dbRecord) => uesrInput == dbRecord;
 
+const unsuccessfulAttempts = new Map();
+
 // POST: /user
 const register = (req, res) => {
   const {
@@ -47,6 +49,17 @@ const register = (req, res) => {
 // POST: /login
 const login = (req, res) => {
   const { username, password } = req.body;
+
+  if (unsuccessfulAttempts.has(username)
+      && unsuccessfulAttempts.get(username).cnt >= 5
+      && (Date.now() - unsuccessfulAttempts.get(username).lastAttemp) <= 180000) {
+    res.status(403).json({
+      status: 'err',
+      msg: '✖ Login failed: Too many unsuccessful attempts, please try again later.',
+    });
+    return;
+  }
+
   const query = `
     SELECT password
     FROM User
@@ -62,7 +75,22 @@ const login = (req, res) => {
       res.status(200).json({
         status: 'ok',
       });
+      if (unsuccessfulAttempts.has(username)) {
+        unsuccessfulAttempts.delete(username);
+      }
     } else {
+      if (!unsuccessfulAttempts.has(username)
+          || (Date.now() - unsuccessfulAttempts.get(username).lastAttemp) > 10000) {
+        unsuccessfulAttempts.set(username, {
+          cnt: 1,
+          lastAttemp: Date.now(),
+        });
+      } else {
+        unsuccessfulAttempts.set(username, {
+          cnt: unsuccessfulAttempts.get(username).cnt + 1,
+          lastAttemp: Date.now(),
+        });
+      }
       res.status(400).json({
         status: 'err',
         msg: '✖ Login failed: Invalid username or password provided.',
