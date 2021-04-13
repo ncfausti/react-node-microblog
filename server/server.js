@@ -6,6 +6,7 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 require('dotenv').config();
 const routes = require('./routes.js');
+const authRouter = require('./auth');
 
 const server = express();
 
@@ -64,7 +65,7 @@ const strategy = new Auth0Strategy(
 );
 
 /**
- * Server configuration for passport
+ * Server/App configuration for passport
  */
 server.set('views', path.join(__dirname, 'views'));
 server.set('view engine', 'pug');
@@ -82,5 +83,8 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+
+// Mount the authentication router to the root path
+server.use('/', authRouter);
 
 module.exports = server; // for testing
