@@ -1,0 +1,150 @@
+#home-root {
+  padding: 60px 30px 0 50px;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.bg-red {
+  color: white;
+  background-color: rgb(247, 110, 110);
+}
+
+.cols {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0 30px;
+}
+
+#col1-avatar {
+  display: block;
+  height: 180px;
+  margin-bottom: 55px;
+}
+
+#col1 {
+  flex-grow: 1;
+}
+
+#col1 p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#col1 span {
+  font-weight: bold;
+}
+
+#col1 button {
+  font-size: 14px;
+  margin-bottom: 15px;
+  padding: 8px 10px;
+  width: 85%;
+  border:none;
+  border-radius: 5px;
+}
+
+#user-info {
+  margin: 10px 0 35px 0;
+}
+
+#user-info div{
+  margin-bottom: 8px;
+}
+
+#col1 a {
+  margin-top: 8px;
+}
+
+#col2 {
+  flex-grow: 5;
+}
+
+#new-post-input {
+  height: 120px;
+  padding: 18px 30px;
+  margin: 12px 0 8px 0;
+  font-size: 18px;
+  border-radius: 5px;
+  border-width: 2px;
+}
+
+#new-post-input::-webkit-input-placeholder {
+  font-size: 24px;
+}
+
+#submit-post {
+  border-width: 2px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 10px;
+}
+
+#col3 {
+  flex-grow: 0.8;
+}
+
+#contact-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0 40px 0;
+}
+
+#following-list{
+  width: 65%;
+  font-size: 13px;
+  margin: 10px 0 30px 0;
+}
+
+#blocking-list{
+  width: 65%;
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+#col3 input {
+  padding: 4px 10px;
+  margin-right: 8px;
+  border-radius: 3px;
+  border-width: 1px;
+}
+
+#following > button {
+  font-size: 12px;
+  padding: 4px 0;
+  width: 70px;
+  border-radius: 3px;
+  border-width: 1px;
+}
+
+#blocking > button {
+  font-size: 12px;
+  padding: 4px 0;
+  width: 70px;
+  border-radius: 3px;
+  border-width: 1px;
+}
+
+.following-contact {
+  margin-top: 5px;
+}
+
+.blocking-contact {
+  margin-top: 5px;
+}
+
+#blocking > button {
+  font-size: 12px;
+  padding: 4px 0;
+  width: 70px;
+  border-radius: 3px;
+  border-width: 1px;
+}
+
+#blocking {
+  margin-top: 10px;
+}
+
+#blocking-list{
+  margin: 10px 0;
+}
