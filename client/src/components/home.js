@@ -23,21 +23,8 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const testUser = 'feng3116';
-    const followingList = [{ username: 'user132' }, { username: 'user22234' }];
-    const followingDivs = followingList.map(
-      (followingObject, i) => <FollowingContact key={i} username={followingObject.username} />,
-    );
-    const blockingList = [{ username: 'user456' }, { username: 'user84634' }];
-    const blockingDivs = blockingList.map(
-      (blockingObject, i) => <BlockingContact key={i} username={blockingObject.username} />,
-    );
-    this.setState({
-      following: followingDivs,
-      blocking: blockingDivs,
-    });
-
-    fetch(`http://localhost:5001/user/${testUser}`, {
+    const currentUser = 'feng3116';
+    fetch(`http://localhost:5001/user/${currentUser}`, {
       method: 'GET',
     }).then((res) => res.json())
       .then(
@@ -49,6 +36,22 @@ class Home extends React.Component {
             summary: result.summary,
             registration_date: new Date(`${result.registration_date} GMT`).toLocaleDateString('en-US'),
             avatar_ref: result.avatar_ref,
+          });
+          console.log(result.userid);
+          const followingList = [{ username: 'user132' }, { username: 'user22234' }];
+          const followingDivs = followingList.map(
+            (followingObject, i) => <FollowingContact
+                                      key={i}
+                                      username={followingObject.username}
+                                    />,
+          );
+          const blockingList = [{ username: 'user456' }, { username: 'user84634' }];
+          const blockingDivs = blockingList.map(
+            (blockingObject, i) => <BlockingContact key={i} username={blockingObject.username} />,
+          );
+          this.setState({
+            following: followingDivs,
+            blocking: blockingDivs,
           });
         },
         (error) => {
@@ -64,8 +67,27 @@ class Home extends React.Component {
   }
 
   handleDeactivate() {
-    alert('Deactivated!');
-    console.log(this.state.username);
+    fetch(`http://localhost:5001/user/${this.state.username}/is_active`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        is_active: false,
+      }),
+    }).then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status == 'ok') {
+            alert('Deactivated!');
+          } else {
+            console.log(result);
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+      );
   }
 
   render() {
