@@ -132,7 +132,7 @@ const resetPsw = (req, res) => {
   // verify email address
   const query = `
     UPDATE User
-    SET password=${password}
+    SET password='${password}'
     WHERE username='${username}' AND email='${email}';
   `;
   connection.query(query, (err, rows) => {

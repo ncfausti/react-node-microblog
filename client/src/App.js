@@ -9,6 +9,7 @@ import Register from './components/register';
 import Login from './components/login';
 import Messaging from './components/messaging';
 import ResetPassword from './components/reset_password';
+import Home from './components/home';
 
 export default class App extends React.Component {
   // eslint-disable-next-line class-methods-use-this
@@ -22,6 +23,13 @@ export default class App extends React.Component {
               path="/"
               render={() => (
                 <Login />
+              )}
+            />
+            <Route
+              exact
+              path="/home"
+              render={() => (
+                <Home />
               )}
             />
             <Route

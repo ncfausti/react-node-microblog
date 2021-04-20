@@ -5,4 +5,5 @@ module.exports = {
   password: 'cis557admin',
   port: '3306',
   database: 'dev',
+  dateStrings: true,
 };
