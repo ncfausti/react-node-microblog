@@ -11,7 +11,7 @@ const unsuccessfulAttempts = new Map();
 // POST: /user
 const register = (req, res) => {
   const {
-    username, password, nickname, email,
+    username, password, nickname, email, avatarRef,
   } = req.body;
   if (!username || !password || username == '' || password == '') {
     res.status(400).json({
@@ -28,12 +28,12 @@ const register = (req, res) => {
     return;
   }
   const query = `
-    INSERT INTO User (username, password, nickname, email)
-    VALUES ('${username}', '${password}', '${nickname}', '${email}');
+    INSERT INTO User (username, password, nickname, email, avatar_ref)
+    VALUES ('${username}', '${password}', '${nickname}', '${email}', '${avatarRef}');
   `;
   connection.query(query, (err, rows) => {
     if (err) {
-      res.status(400).json({
+      res.status(409).json({
         status: 'err',
         msg: '✖ Registration failed: The username already exists.',
       });
@@ -205,6 +205,216 @@ const changeUserActivation = (req, res) => {
   });
 };
 
+const createPost = (req, res) => {
+  const { userid, content } = req.body;
+  const query = `
+    INSERT INTO Post (ownerid, content)
+    VALUES (${userid}, '${content}');
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(201).json({ status: 'ok' });
+    }
+  });
+};
+
+const getPosts = (req, res) => {
+  const query = `
+    SELECT *
+    FROM Post JOIN User
+    ON Post.ownerid=User.userid
+    ORDER BY creation_date DESC;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const getPostsByUser = (req, res) => {
+  const { userid } = req.params;
+  const query = `
+    SELECT *
+    FROM Post JOIN User
+    ON Post.ownerid=User.userid
+    WHERE ownerid=${userid}
+    ORDER BY creation_date DESC;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const getFeed = (req, res) => {
+  const { userid } = req.params;
+  const query = `
+    SELECT *
+    FROM Post JOIN User
+    ON Post.ownerid=User.userid
+    WHERE ownerid IN (
+      SELECT user1
+      FROM Follows
+      WHERE user0=${userid}
+    ) OR ownerid=${userid}
+    ORDER BY creation_date DESC;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const getCommentsByPost = (req, res) => {
+  const { postid } = req.params;
+  const query = `
+    SELECT *
+    FROM Comment
+    WHERE postid=${postid}
+    ORDER BY creation_date DESC;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const getFollowings = (req, res) => {
+  const { id } = req.params;
+  const query = `
+    WITH f AS (
+      SELECT user1
+      FROM Follows
+      WHERE user0=${id}
+    )
+    SELECT User.*
+    FROM f JOIN User
+    ON f.user1=User.userid;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const addFollow = (req, res) => {
+  const { user0, user1 } = req.body;
+  const query = `
+    INSERT INTO Follows (user0, user1)
+    VALUES (${user0}, ${user1});
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({
+        msg: 'Duplicate follows.',
+      });
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
+const deleteFollow = (req, res) => {
+  const { user0, user1 } = req.body;
+  const query = `
+    DELETE FROM Follows
+    WHERE user0=${user0} AND user1=${user1};
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
+const getBlockings = (req, res) => {
+  const { id } = req.params;
+  const query = `
+    WITH b AS (
+      SELECT user1
+      FROM Blocks
+      WHERE user0=${id}
+    )
+    SELECT User.*
+    FROM b JOIN User
+    ON b.user1=User.userid;
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const addBlock = (req, res) => {
+  const { user0, user1 } = req.body;
+  const query = `
+    INSERT INTO Blocks (user0, user1)
+    VALUES (${user0}, ${user1});
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({
+        msg: 'Duplicate blocks.',
+      });
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
+const deleteBlock = (req, res) => {
+  const { user0, user1 } = req.body;
+  const query = `
+    DELETE FROM Blocks
+    WHERE user0=${user0} AND user1=${user1};
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
 module.exports = {
-  register, login, getUser, getUsers, resetPsw, changeUserActivation,
+  register,
+  login,
+  getUser,
+  getUsers,
+  resetPsw,
+  changeUserActivation,
+  createPost,
+  getPosts,
+  getPostsByUser,
+  getFeed,
+  getCommentsByPost,
+  getFollowings,
+  addFollow,
+  deleteFollow,
+  getBlockings,
+  addBlock,
+  deleteBlock,
 };

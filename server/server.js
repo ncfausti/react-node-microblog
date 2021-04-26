@@ -33,16 +33,25 @@ server.use(cors());
 server.options('*', cors());
 server.use(express.json());
 
-server.get('/test', (req, res) => {
-  res.send('connected');
-});
+server.post('/api/user', routes.register);
+server.post('/api/login', routes.login);
+server.get('/api/user/:username', routes.getUser);
+server.put('/api/user/:username/password', routes.resetPsw);
+server.put('/api/user/:username/is_active', routes.changeUserActivation);
+server.get('/api/users', routes.getUsers);
 
-server.post('/user', routes.register);
-server.post('/login', routes.login);
-server.get('/user/:username', routes.getUser);
-server.put('/user/:username/password', routes.resetPsw);
-server.put('/user/:username/is_active', routes.changeUserActivation);
-server.get('/users', routes.getUsers);
+server.post('/api/post', routes.createPost);
+server.get('/api/posts', routes.getPosts);
+server.get('/api/feed/:userid', routes.getFeed);
+server.get('/api/posts-by-user/:userid', routes.getPostsByUser);
+server.get('/api/comments-by-post/:postid', routes.getCommentsByPost);
+server.get('/api/following/:id', routes.getFollowings);
+server.post('/api/follows', routes.addFollow);
+server.delete('/api/follows', routes.deleteFollow);
+server.get('/api/blocking/:id', routes.getBlockings);
+server.post('/api/blocks', routes.addBlock);
+server.delete('/api/blocks', routes.deleteBlock);
+
 server.listen(port, () => console.log(`server listening on port ${port}`));
 
 /**

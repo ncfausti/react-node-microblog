@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/login.css';
+import Agent from './fetches';
 
 class Login extends React.Component {
   constructor(props) {
@@ -27,16 +28,7 @@ class Login extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    fetch('http://localhost:5001/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    }).then((res) => res.json())
+    Agent.login(this.state.username, this.state.password)
       .then(
         (result) => {
           const errDiv = document.getElementById('errMsg');

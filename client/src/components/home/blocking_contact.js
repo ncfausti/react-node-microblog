@@ -10,7 +10,10 @@ export default class BlockingContact extends React.Component {
     return (
       <div className="blocking-contact">
         <span style={{ fontWeight: 'bold' }}>{this.props.username}</span>
-        <button style={btnStyle}>Unblock</button>
+        <button
+          style={btnStyle}
+          onClick={() => this.props.unblock(this.props.userid)}
+        >Unblock</button>
       </div>
     );
   }

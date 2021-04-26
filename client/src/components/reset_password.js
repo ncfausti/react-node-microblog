@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/login.css';
+import Agent from './fetches';
 
 class ResetPassword extends React.Component {
   constructor(props) {
@@ -27,16 +28,7 @@ class ResetPassword extends React.Component {
       errDiv.style.display = 'block';
       return;
     }
-    fetch(`http://localhost:5001/user/${this.state.username}/password`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    }).then((res) => res.json())
+    Agent.resetPassword(this.state.username, this.state.email, this.state.password)
       .then(
         (result) => {
           if (result.status != 'ok') {
