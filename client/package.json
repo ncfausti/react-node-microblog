@@ -13,7 +13,10 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "4.0.2",
     "web-vitals": "^1.1.0",
-    "isomorphic-fetch": "^3.0.0"
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.22.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,13 +44,10 @@
     ]
   },
   "devDependencies": {
+    "isomorphic-fetch": "^3.0.0",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "babel-jest": "^26.6.0",
-    "eslint": "^7.20.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-react": "^7.22.0",
     "fetch-mock": "^9.10.7",
     "geckodriver": "^1.22.2",
     "identity-obj-proxy": "^3.0.0",
