@@ -105,6 +105,7 @@ class Home extends React.Component {
           .then(() => {
             this.setState({ followSearch: '' });
             this.getFollowing();
+            this.getFeed();
           });
       });
   }
@@ -116,6 +117,7 @@ class Home extends React.Component {
           .then(() => {
             this.setState({ blockSearch: '' });
             this.getBlocking();
+            this.getFeed();
           });
       });
   }
@@ -123,12 +125,14 @@ class Home extends React.Component {
   handleUnfollow(id) {
     Agent.deleteFollow(this.state.userid, id).then(() => {
       this.getFollowing();
+      this.getFeed();
     });
   }
 
   handleUnblock(id) {
     Agent.deleteBlock(this.state.userid, id).then(() => {
       this.getBlocking();
+      this.getFeed();
     });
   }
 
