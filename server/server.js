@@ -32,6 +32,7 @@ const session = {
 server.use(cors());
 server.options('*', cors());
 server.use(express.json());
+server.use(express.static(path.join(__dirname, '../client/build')));
 
 server.post('/api/user', routes.register);
 server.post('/api/login', routes.login);
@@ -51,6 +52,11 @@ server.delete('/api/follows', routes.deleteFollow);
 server.get('/api/blocking/:id', routes.getBlockings);
 server.post('/api/blocks', routes.addBlock);
 server.delete('/api/blocks', routes.deleteBlock);
+
+// static route
+server.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 server.listen(port, () => console.log(`server listening on port ${port}`));
 
