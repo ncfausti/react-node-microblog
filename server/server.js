@@ -10,10 +10,10 @@ const routes = require('./routes.js');
 const server = express();
 
 /* eslint-disable no-use-before-define */
-if (server.get('env') === 'production') {
-  // Serve secure cookies, requires HTTPS
-  session.cookie.secure = true;
-}
+// if (server.get('env') === 'production') {
+//   // Serve secure cookies, requires HTTPS
+//   session.cookie.secure = true;
+// }
 /* eslint-enable no-use-before-define */
 
 const port = process.env.PORT || '5001';
