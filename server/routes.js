@@ -209,11 +209,12 @@ const createPost = (req, res) => {
   const { userid, content } = req.body;
   const query = `
     INSERT INTO Post (ownerid, content)
-    VALUES (${userid}, '${content}');
+    VALUES (?, ?);
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [userid, content], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(201).json({ status: 'ok' });
     }
@@ -230,6 +231,7 @@ const getPosts = (req, res) => {
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -248,6 +250,7 @@ const getPostsByUser = (req, res) => {
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -260,16 +263,59 @@ const getFeed = (req, res) => {
     SELECT *
     FROM Post JOIN User
     ON Post.ownerid=User.userid
-    WHERE ownerid IN (
+    WHERE (ownerid IN (
       SELECT user1
       FROM Follows
       WHERE user0=${userid}
-    ) OR ownerid=${userid}
+    ) AND ownerid NOT IN (
+      SELECT user1
+      FROM Blocks
+      WHERE user0=${userid}
+    ) AND postid NOT IN (
+      SELECT postid
+      FROM Hides
+      WHERE userid=${userid}
+    ) AND User.is_active=true
+    )
+    OR ownerid=${userid}
     ORDER BY creation_date DESC;
   `;
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const hidePost = (req, res) => {
+  const { userid, postid } = req.body;
+  const query = `
+    INSERT INTO Hides (userid, postid)
+    VALUES (${userid}, ${postid});
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const deletePost = (req, res) => {
+  const { postid } = req.params;
+  const query = `
+    DELETE FROM Post
+    WHERE postid=${postid};
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -279,14 +325,16 @@ const getFeed = (req, res) => {
 const getCommentsByPost = (req, res) => {
   const { postid } = req.params;
   const query = `
-    SELECT *
-    FROM Comment
-    WHERE postid=${postid}
-    ORDER BY creation_date DESC;
+    SELECT c.*, u.userid, u.username, u.nickname, u.avatar_ref
+    FROM Comment c JOIN User u
+      ON c.ownerid = u.userid
+    WHERE c.postid=${postid}
+    ORDER BY c.creation_date DESC;
   `;
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -308,6 +356,7 @@ const getFollowings = (req, res) => {
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -325,6 +374,7 @@ const addFollow = (req, res) => {
       res.status(400).json({
         msg: 'Duplicate follows.',
       });
+      console.log(err);
     } else {
       res.status(200).json({ status: 'ok' });
     }
@@ -340,6 +390,7 @@ const deleteFollow = (req, res) => {
   connection.query(query, (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json({ status: 'ok' });
     }
@@ -361,6 +412,7 @@ const getBlockings = (req, res) => {
   connection.query(query, (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json(rows);
     }
@@ -378,6 +430,7 @@ const addBlock = (req, res) => {
       res.status(400).json({
         msg: 'Duplicate blocks.',
       });
+      console.log(err);
     } else {
       res.status(200).json({ status: 'ok' });
     }
@@ -393,6 +446,44 @@ const deleteBlock = (req, res) => {
   connection.query(query, (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
+const newComment = (req, res) => {
+  const {
+    ownerid,
+    postid,
+    content,
+    replyingTo,
+  } = req.body;
+  const query = `
+    INSERT INTO Comment (ownerid, postid, content, replying_to)
+    VALUES (?, ?, ?, ?);
+  `;
+  connection.query(query, [ownerid, postid, content, replyingTo], (err) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json({ status: 'ok' });
+    }
+  });
+};
+
+const deleteComment = (req, res) => {
+  const { commentid } = req.params;
+  const query = `
+    DELETE FROM Comment
+    WHERE commentid=${commentid};
+  `;
+  connection.query(query, (err) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
     } else {
       res.status(200).json({ status: 'ok' });
     }
@@ -410,6 +501,8 @@ module.exports = {
   getPosts,
   getPostsByUser,
   getFeed,
+  hidePost,
+  deletePost,
   getCommentsByPost,
   getFollowings,
   addFollow,
@@ -417,4 +510,6 @@ module.exports = {
   getBlockings,
   addBlock,
   deleteBlock,
+  newComment,
+  deleteComment,
 };

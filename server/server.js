@@ -43,8 +43,12 @@ server.get('/api/users', routes.getUsers);
 
 server.post('/api/post', routes.createPost);
 server.get('/api/posts', routes.getPosts);
+server.delete('/api/post/:postid', routes.deletePost);
+server.post('/api/hide', routes.hidePost);
 server.get('/api/feed/:userid', routes.getFeed);
 server.get('/api/posts-by-user/:userid', routes.getPostsByUser);
+server.post('/api/comment', routes.newComment);
+server.delete('/api/comment/:commentid', routes.deleteComment);
 server.get('/api/comments-by-post/:postid', routes.getCommentsByPost);
 server.get('/api/following/:id', routes.getFollowings);
 server.post('/api/follows', routes.addFollow);
