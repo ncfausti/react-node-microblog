@@ -115,6 +115,27 @@ async function getFeed(id) {
   return posts.json();
 }
 
+async function hidePost(userid, postid) {
+  const res = await fetch(`${domain}/api/hide`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userid,
+      postid,
+    }),
+  });
+  return res.json();
+}
+
+async function deletePost(postid) {
+  const res = await fetch(`${domain}/api/post/${postid}`, {
+    method: 'DELETE',
+  });
+  return res.json();
+}
+
 async function deactivate(username) {
   const res = await fetch(`${domain}/api/user/${username}/is_active`, {
     method: 'PUT',
@@ -163,6 +184,34 @@ async function register(username, password, email, nickname, avatarRef) {
   return res.json();
 }
 
+async function comment(ownerid, postid, replyingTo, content) {
+  const res = await fetch(`${domain}/api/comment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ownerid,
+      postid,
+      content,
+      replyingTo,
+    }),
+  });
+  return res.json();
+}
+
+async function getCommentsByPost(postid) {
+  const res = await fetch(`${domain}/api/comments-by-post/${postid}`);
+  return res.json();
+}
+
+async function deleteComment(id) {
+  const res = await fetch(`${domain}/api/comment/${id}`, {
+    method: 'DELETE',
+  });
+  return res.json();
+}
+
 export default {
   addFollow,
   addBlock,
@@ -176,7 +225,12 @@ export default {
   getPosts,
   getPostsByUser,
   getFeed,
+  hidePost,
+  deletePost,
   deactivate,
   login,
   register,
+  comment,
+  getCommentsByPost,
+  deleteComment,
 };

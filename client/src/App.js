@@ -11,6 +11,8 @@ import Messaging from './components/messaging';
 import ResetPassword from './components/reset_password';
 import Home from './components/home';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default class App extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   render() {

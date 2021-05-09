@@ -38,6 +38,8 @@ class Home extends React.Component {
     this.handleMyPosts = this.handleMyPosts.bind(this);
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleHidePost = this.handleHidePost.bind(this);
+    this.handleDeletePost = this.handleDeletePost.bind(this);
   }
 
   componentDidMount() {
@@ -50,7 +52,7 @@ class Home extends React.Component {
             nickname: result.nickname,
             email: result.email,
             summary: result.summary,
-            registration_date: new Date(`${result.registration_date} GMT`).toLocaleDateString('en-US'),
+            registration_date: new Date(`${result.registration_date}+00:00`).toLocaleDateString('en-US'),
             avatar_ref: result.avatar_ref,
           });
           this.getBlocking();
@@ -173,10 +175,13 @@ class Home extends React.Component {
                           username={feedObject.username}
                           content={feedObject.content}
                           date={
-                            new Date(`${feedObject.creation_date} GMT`).toLocaleString('en-US')}
-                          numComments={feedObject.num_comments}
-                          numRetweets={feedObject.num_retweets}
-                          numLikes={feedObject.num_likes}
+                            new Date(`${feedObject.creation_date}+00:00`).toLocaleString('en-US')}
+                          postid={feedObject.postid}
+                          viewerid={this.state.userid}
+                          ownerid={feedObject.ownerid}
+                          currentuser_avatar_ref={this.state.avatar_ref}
+                          hide={this.handleHidePost}
+                          delete={this.handleDeletePost}
                         />,
     );
     this.setState({ feed: feedDivs });
@@ -206,6 +211,14 @@ class Home extends React.Component {
 
   handleLogout() {
     console.log(this.state.userid);
+  }
+
+  handleHidePost(id) {
+    Agent.hidePost(this.state.userid, id).then(() => this.getFeed());
+  }
+
+  handleDeletePost(id) {
+    Agent.deletePost(id).then(() => this.getFeed());
   }
 
   render() {
