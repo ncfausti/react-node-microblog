@@ -84,6 +84,13 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+// custom middleware with Express
+// Exposes request-level information, such as isAuthenticated
+server.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
+
 // Mount the authentication router to the root path
 server.use('/', authRouter);
 
