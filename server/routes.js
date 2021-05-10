@@ -11,7 +11,7 @@ const unsuccessfulAttempts = new Map();
 // POST: /user
 const register = (req, res) => {
   const {
-    username, password, nickname, email, avatarRef,
+    username, password, nickname, email, avatarRef, summary,
   } = req.body;
   if (!username || !password || username == '' || password == '') {
     res.status(400).json({
@@ -28,8 +28,8 @@ const register = (req, res) => {
     return;
   }
   const query = `
-    INSERT INTO User (username, password, nickname, email, avatar_ref)
-    VALUES ('${username}', '${password}', '${nickname}', '${email}', '${avatarRef}');
+    INSERT INTO User (username, password, nickname, email, avatar_ref, summary)
+    VALUES ('${username}', '${password}', '${nickname}', '${email}', '${avatarRef}', '${summary}');
   `;
   connection.query(query, (err, rows) => {
     if (err) {
@@ -206,12 +206,12 @@ const changeUserActivation = (req, res) => {
 };
 
 const createPost = (req, res) => {
-  const { userid, content } = req.body;
+  const { userid, content, media } = req.body;
   const query = `
-    INSERT INTO Post (ownerid, content)
-    VALUES (?, ?);
+    INSERT INTO Post (ownerid, content, media)
+    VALUES (?, ?, ?);
   `;
-  connection.query(query, [userid, content], (err) => {
+  connection.query(query, [userid, content, media], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -222,13 +222,15 @@ const createPost = (req, res) => {
 };
 
 const getPosts = (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1;
   const query = `
     SELECT *
     FROM Post JOIN User
     ON Post.ownerid=User.userid
-    ORDER BY creation_date DESC;
+    ORDER BY creation_date DESC
+    LIMIT 5 OFFSET ?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [(page - 1) * 5], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -240,14 +242,16 @@ const getPosts = (req, res) => {
 
 const getPostsByUser = (req, res) => {
   const { userid } = req.params;
+  const page = parseInt(req.query.page, 10) || 1;
   const query = `
     SELECT *
     FROM Post JOIN User
     ON Post.ownerid=User.userid
     WHERE ownerid=${userid}
-    ORDER BY creation_date DESC;
+    ORDER BY creation_date DESC
+    LIMIT 5 OFFSET ?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [(page - 1) * 5], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -259,6 +263,7 @@ const getPostsByUser = (req, res) => {
 
 const getFeed = (req, res) => {
   const { userid } = req.params;
+  const page = parseInt(req.query.page, 10) || 1;
   const query = `
     SELECT *
     FROM Post JOIN User
@@ -278,9 +283,10 @@ const getFeed = (req, res) => {
     ) AND User.is_active=true
     )
     OR ownerid=${userid}
-    ORDER BY creation_date DESC;
+    ORDER BY creation_date DESC
+    LIMIT 5 OFFSET ?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [(page - 1) * 5], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);

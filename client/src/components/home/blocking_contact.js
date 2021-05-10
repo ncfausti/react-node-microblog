@@ -6,6 +6,7 @@ export default class BlockingContact extends React.Component {
       fontSize: '11px',
       float: 'right',
       border: 'none',
+      borderRadius: '3px',
     };
     return (
       <div className="blocking-contact">
