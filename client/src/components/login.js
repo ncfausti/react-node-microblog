@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import AuthenticationButton from './authentication-button';
 import '../style/login.css';
 
 class Login extends React.Component {
@@ -93,9 +94,10 @@ class Login extends React.Component {
               onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}/>
-            <button type="submit">
+            {/* <button type="submit">
               Login
-            </button>
+            </button> */}
+            <AuthenticationButton />
           </form>
         </div>
       </div>
