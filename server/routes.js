@@ -29,27 +29,31 @@ const register = (req, res) => {
   }
   const query = `
     INSERT INTO User (username, password, nickname, email, avatar_ref, summary)
-    VALUES ('${username}', '${password}', '${nickname}', '${email}', '${avatarRef}', '${summary}');
+    VALUES (?, ?, ?, ?, ?, ?);
   `;
-  connection.query(query, (err, rows) => {
-    if (err) {
-      res.status(409).json({
-        status: 'err',
-        msg: '✖ Registration failed: The username already exists.',
-      });
-    } else {
-      res.status(201).json({
-        status: 'ok',
-        id: rows.insertId,
-      });
-    }
-  });
+  connection.query(
+    query,
+    [username, password, nickname, email, avatarRef, summary],
+    (err, rows) => {
+      if (err) {
+        res.status(409).json({
+          status: 'err',
+          msg: '✖ Registration failed: The username already exists.',
+        });
+        console.log(err);
+      } else {
+        res.status(201).json({
+          status: 'ok',
+          id: rows.insertId,
+        });
+      }
+    },
+  );
 };
 
 // POST: /login
 const login = (req, res) => {
   const { username, password } = req.body;
-
   if (unsuccessfulAttempts.has(username)
       && unsuccessfulAttempts.get(username).cnt >= 5
       && (Date.now() - unsuccessfulAttempts.get(username).lastAttemp) <= 180000) {
@@ -63,13 +67,18 @@ const login = (req, res) => {
   const query = `
     SELECT password
     FROM User
-    WHERE username='${username}';
+    WHERE username=?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [username], (err, rows) => {
     if (err) {
       res.status(500).json({
         status: 'err',
         msg: '✖ Login failed: Internal server error.',
+      });
+    } else if (rows.length === 0) {
+      res.status(400).json({
+        status: 'err',
+        msg: '✖ Login failed: Invalid username or password provided.',
       });
     } else if (validatePassword(password, rows[0].password)) {
       res.status(200).json({
@@ -105,9 +114,9 @@ const getUser = (req, res) => {
   const query = `
     SELECT *
     FROM User
-    WHERE username='${username}';
+    WHERE username=?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [username], (err, rows) => {
     if (err) {
       res.status(500).json({
         status: 'err',
@@ -132,10 +141,10 @@ const resetPsw = (req, res) => {
   // verify email address
   const query = `
     UPDATE User
-    SET password='${password}'
-    WHERE username='${username}' AND email='${email}';
+    SET password=?
+    WHERE username=? AND email=?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [password, username, email], (err, rows) => {
     if (err) {
       res.status(400).json({
         status: 'err',
@@ -156,13 +165,13 @@ const resetPsw = (req, res) => {
 
 // GET: /users
 const getUsers = (req, res) => {
-  const limit = req.query.limit || '100';
+  const limit = parseInt(req.query.limit, 10) || 100;
   const query = `
     SELECT *
     FROM User
-    LIMIT ${limit};
+    LIMIT ?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [limit], (err, rows) => {
     if (err) {
       res.status(500).json({
         status: 'err',
@@ -179,14 +188,12 @@ const changeUserActivation = (req, res) => {
   const { username } = req.params;
   /* eslint-disable camelcase */
   const { is_active } = req.body;
-
   const query = `
     UPDATE User
-    SET is_active=${is_active}
-    WHERE username='${username}';
+    SET is_active=?
+    WHERE username=?;
   `;
-  /* eslint-enable camelcase */
-  connection.query(query, (err, rows) => {
+  connection.query(query, [is_active, username], (err, rows) => {
     if (err) {
       res.status(400).json({
         status: 'err',
@@ -203,6 +210,7 @@ const changeUserActivation = (req, res) => {
       });
     }
   });
+  /* eslint-enable camelcase */
 };
 
 const createPost = (req, res) => {
@@ -241,17 +249,17 @@ const getPosts = (req, res) => {
 };
 
 const getPostsByUser = (req, res) => {
-  const { userid } = req.params;
+  const userid = parseInt(req.params.userid, 10);
   const page = parseInt(req.query.page, 10) || 1;
   const query = `
     SELECT *
     FROM Post JOIN User
     ON Post.ownerid=User.userid
-    WHERE ownerid=${userid}
+    WHERE ownerid=?
     ORDER BY creation_date DESC
     LIMIT 5 OFFSET ?;
   `;
-  connection.query(query, [(page - 1) * 5], (err, rows) => {
+  connection.query(query, [userid, (page - 1) * 5], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -262,7 +270,7 @@ const getPostsByUser = (req, res) => {
 };
 
 const getFeed = (req, res) => {
-  const { userid } = req.params;
+  const userid = parseInt(req.params.userid, 10);
   const page = parseInt(req.query.page, 10) || 1;
   const query = `
     SELECT *
@@ -271,22 +279,22 @@ const getFeed = (req, res) => {
     WHERE (ownerid IN (
       SELECT user1
       FROM Follows
-      WHERE user0=${userid}
+      WHERE user0=?
     ) AND ownerid NOT IN (
       SELECT user1
       FROM Blocks
-      WHERE user0=${userid}
+      WHERE user0=?
     ) AND postid NOT IN (
       SELECT postid
       FROM Hides
-      WHERE userid=${userid}
+      WHERE userid=?
     ) AND User.is_active=true
     )
-    OR ownerid=${userid}
+    OR ownerid=?
     ORDER BY creation_date DESC
     LIMIT 5 OFFSET ?;
   `;
-  connection.query(query, [(page - 1) * 5], (err, rows) => {
+  connection.query(query, [userid, userid, userid, userid, (page - 1) * 5], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -300,9 +308,9 @@ const hidePost = (req, res) => {
   const { userid, postid } = req.body;
   const query = `
     INSERT INTO Hides (userid, postid)
-    VALUES (${userid}, ${postid});
+    VALUES (?, ?);
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [userid, postid], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -313,12 +321,12 @@ const hidePost = (req, res) => {
 };
 
 const deletePost = (req, res) => {
-  const { postid } = req.params;
+  const postid = parseInt(req.params.postid, 10);
   const query = `
     DELETE FROM Post
-    WHERE postid=${postid};
+    WHERE postid=?;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [postid], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -329,15 +337,15 @@ const deletePost = (req, res) => {
 };
 
 const getCommentsByPost = (req, res) => {
-  const { postid } = req.params;
+  const postid = parseInt(req.params.postid, 10);
   const query = `
     SELECT c.*, u.userid, u.username, u.nickname, u.avatar_ref
     FROM Comment c JOIN User u
       ON c.ownerid = u.userid
-    WHERE c.postid=${postid}
+    WHERE c.postid=?
     ORDER BY c.creation_date DESC;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [postid], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -348,18 +356,18 @@ const getCommentsByPost = (req, res) => {
 };
 
 const getFollowings = (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id, 10);
   const query = `
     WITH f AS (
       SELECT user1
       FROM Follows
-      WHERE user0=${id}
+      WHERE user0=?
     )
     SELECT User.*
     FROM f JOIN User
     ON f.user1=User.userid;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [id], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -373,9 +381,9 @@ const addFollow = (req, res) => {
   const { user0, user1 } = req.body;
   const query = `
     INSERT INTO Follows (user0, user1)
-    VALUES (${user0}, ${user1});
+    VALUES (?, ?);
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [user0, user1], (err) => {
     if (err) {
       res.status(400).json({
         msg: 'Duplicate follows.',
@@ -391,9 +399,9 @@ const deleteFollow = (req, res) => {
   const { user0, user1 } = req.body;
   const query = `
     DELETE FROM Follows
-    WHERE user0=${user0} AND user1=${user1};
+    WHERE user0=? AND user1=?;
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [user0, user1], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -404,18 +412,18 @@ const deleteFollow = (req, res) => {
 };
 
 const getBlockings = (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id, 10);
   const query = `
     WITH b AS (
       SELECT user1
       FROM Blocks
-      WHERE user0=${id}
+      WHERE user0=?
     )
     SELECT User.*
     FROM b JOIN User
     ON b.user1=User.userid;
   `;
-  connection.query(query, (err, rows) => {
+  connection.query(query, [id], (err, rows) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -429,9 +437,9 @@ const addBlock = (req, res) => {
   const { user0, user1 } = req.body;
   const query = `
     INSERT INTO Blocks (user0, user1)
-    VALUES (${user0}, ${user1});
+    VALUES (?, ?);
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [user0, user1], (err) => {
     if (err) {
       res.status(400).json({
         msg: 'Duplicate blocks.',
@@ -447,9 +455,9 @@ const deleteBlock = (req, res) => {
   const { user0, user1 } = req.body;
   const query = `
     DELETE FROM Blocks
-    WHERE user0=${user0} AND user1=${user1};
+    WHERE user0=? AND user1=?;
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [user0, user1], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
@@ -481,12 +489,12 @@ const newComment = (req, res) => {
 };
 
 const deleteComment = (req, res) => {
-  const { commentid } = req.params;
+  const commentid = parseInt(req.params.commentid, 10);
   const query = `
     DELETE FROM Comment
-    WHERE commentid=${commentid};
+    WHERE commentid=?;
   `;
-  connection.query(query, (err) => {
+  connection.query(query, [commentid], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
