@@ -31,7 +31,7 @@ const session = {
 
 server.use(cors());
 server.options('*', cors());
-server.use(express.json());
+server.use(express.json({ limit: '17mb' }));
 server.use(express.static(path.join(__dirname, '../client/build')));
 
 server.post('/api/user', routes.register);

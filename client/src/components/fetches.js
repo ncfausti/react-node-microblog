@@ -86,7 +86,7 @@ async function resetPassword(username, email, password) {
   return res.json();
 }
 
-async function createPost(userid, content) {
+async function createPost(userid, content, media) {
   const res = await fetch(`${domain}/api/post`, {
     method: 'POST',
     headers: {
@@ -95,23 +95,24 @@ async function createPost(userid, content) {
     body: JSON.stringify({
       userid,
       content,
+      media,
     }),
   });
   return res.json();
 }
 
-async function getPosts() {
-  const res = await fetch(`${domain}/api/posts`);
+async function getPosts(page = 1) {
+  const res = await fetch(`${domain}/api/posts?page=${page}`);
   return res.json();
 }
 
-async function getPostsByUser(id) {
-  const posts = await fetch(`${domain}/api/posts-by-user/${id}`);
+async function getPostsByUser(id, page = 1) {
+  const posts = await fetch(`${domain}/api/posts-by-user/${id}?page=${page}`);
   return posts.json();
 }
 
-async function getFeed(id) {
-  const posts = await fetch(`${domain}/api/feed/${id}`);
+async function getFeed(id, page = 1) {
+  const posts = await fetch(`${domain}/api/feed/${id}?page=${page}`);
   return posts.json();
 }
 
@@ -163,7 +164,7 @@ async function login(username, password) {
   return res.json();
 }
 
-async function register(username, password, email, nickname, avatarRef) {
+async function register(username, password, email, nickname, avatarRef, summary) {
   let nicknameOverride = nickname;
   if (nickname === '') {
     nicknameOverride = username;
@@ -178,7 +179,8 @@ async function register(username, password, email, nickname, avatarRef) {
       password,
       email,
       nickname: nicknameOverride,
-      avatar_ref: avatarRef,
+      avatarRef,
+      summary,
     }),
   });
   return res.json();

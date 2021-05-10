@@ -28,6 +28,10 @@ export default class Post extends React.Component {
     this.getComments();
   }
 
+  componentDidUpdate() {
+    this.getComments();
+  }
+
   handleToggleComment() {
     if (this.state.showComments) {
       this.setState({ showComments: false });
@@ -110,6 +114,9 @@ export default class Post extends React.Component {
           <div className="post-main">
             <div className="post-main-content">
               {this.props.content}
+            </div>
+            <div className="post-main-media">
+              <img src={this.props.media} />
             </div>
             <div className="post-main-date">
               <span>Posted at {this.props.date}</span>

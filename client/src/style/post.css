@@ -25,13 +25,29 @@
 
 .post-main {
   width: 100%;
-  line-height: 26px;
 }
 
 .post-main-content {
   white-space: pre-wrap;
   font-size: 20px;
   padding-left: 5px;
+  line-height: 26px;
+}
+
+.post-main-media {
+  width: 100%;
+  max-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0px;
+  margin-top: 10px;
+  padding: 0 20px 0 10px;
+}
+
+.post-main-media img {
+  width: 100%;
 }
 
 .post-nameplate {
@@ -78,6 +94,7 @@
   color: rgb(91, 112, 131);
   font-weight: 400;
   font-size: 16px;
+  line-height: 26px;
 }
 
 .post-main-bottom {
@@ -85,6 +102,7 @@
   margin-top: 10px;
   display: flex;
   flex-flow: row nowrap;
+  line-height: 26px;
 }
 
 .post-main-bottom span {
