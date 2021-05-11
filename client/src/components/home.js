@@ -327,6 +327,7 @@ class Home extends React.Component {
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>
           </div>
+          <button onClick={() => { window.location.href = '/messaging'; }}>Private Message </button>
           <button onClick={this.handleMyPosts}>View My Posts Only</button>
           <button onClick={this.handleViewAll}>Explore All Posts</button>
           <button onClick={this.handleLogout} id="logout-btn">Log Out</button>
