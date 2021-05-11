@@ -106,3 +106,14 @@ describe('Test hide, follow, block', () => {
       expect(JSON.parse(response.text).length).toStrictEqual(1);
     }));
 });
+
+describe('Test messaging', () => {
+  it('get messages', () => request.get('/api/messages/feng3116')
+    .expect(200)
+    .then((response) => {
+      console.log(response);
+      expect(response.length > 0);
+    }));
+  it('see message', () => request.put('/api/seeMessage/26')
+    .expect(200));
+});
