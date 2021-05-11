@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import '../style/messaging.css';
+import { useHistory } from 'react-router';
 import Agent from './fetches';
 
 const bucketName = 'cis577-messages';
@@ -10,35 +11,44 @@ const Messaging = ({ state }) => {
   const [sentMessages, setSentMessages] = useState([]);
   const [messageType, setMessageType] = useState('text');
   const [users, setUsers] = useState([]);
-  const [thisUser, setThisUser] = useState('feng3116');
+  const [thisUser, setThisUser] = useState('');
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
   const [image, setImage] = useState();
+  const history = useHistory();
+
   useEffect(() => {
-    console.log(state);
+    if (history && history.location && history.location.state) {
+      setThisUser(history.location.state.username);
+    }
     window.onclick = (event) => {
       if (event.target == document.getElementById('messagingModal')) {
         document.getElementById('messagingModal').style.display = 'text';
       }
     };
-    Agent.getMessages(thisUser)
-      .then((res) => {
-        res.forEach((message) => {
-          if (!message.seen) {
-            Agent.seeMessage(message.idMessages);
-          }
-        });
-        setMessages(res);
-      });
-    Agent.getUsers()
-      .then((res) => {
-        setUsers(res);
-      });
-    Agent.getSentMessages(thisUser)
-      .then((res) => {
-        setSentMessages(res);
-      });
   }, []);
+
+  useEffect(() => {
+    if (thisUser != '') {
+      Agent.getMessages(thisUser)
+        .then((res) => {
+          res.forEach((message) => {
+            if (!message.seen) {
+              Agent.seeMessage(message.idMessages);
+            }
+          });
+          setMessages(res);
+        });
+      Agent.getUsers()
+        .then((res) => {
+          setUsers(res);
+        });
+      Agent.getSentMessages(thisUser)
+        .then((res) => {
+          setSentMessages(res);
+        });
+    }
+  }, [thisUser]);
 
   const openModal = () => {
     document.getElementById('messagingModal').style.display = 'block';
@@ -56,7 +66,6 @@ const Messaging = ({ state }) => {
     Agent.publishMessage(srcUser, dstUser, text, audio, video, image);
     closeModal();
   };
-  console.log(sentMessages);
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: '50%' }}>
