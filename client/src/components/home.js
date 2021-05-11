@@ -382,7 +382,7 @@ class Home extends React.Component {
               ref={this.inputRef}
               onClick={this.removePlaceholderText}
                placeholder={this.state.username || 'nick'}/>
-            <button disabled={disabled} onClick={this.joinRoom}>Join Room</button>
+            <button disabled={disabled} onClick={this.joinRoom}>Create Room</button>
           </div>
           : <Room returnToLobby={this.returnToLobby} room={this.state.room} />
       }
