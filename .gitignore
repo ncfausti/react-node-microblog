@@ -12,6 +12,7 @@ client/node_modules/
 
 # cache
 .cache/
+server/uploads/
 
 # misc
 .DS_Store
@@ -27,3 +28,4 @@ yarn-error.log*
 #testing
 server/coverage/
 client/coverage/
+
