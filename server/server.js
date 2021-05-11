@@ -76,7 +76,6 @@ server.delete('/api/follows', routes.deleteFollow);
 server.get('/api/blocking/:id', routes.getBlockings);
 server.post('/api/blocks', routes.addBlock);
 server.delete('/api/blocks', routes.deleteBlock);
-<<<<<<< HEAD
 server.get('/api/messages/:username', routes.getMessages);
 server.get('/api/sentMessages/:username', routes.getSentMessages);
 server.put('/api/seeMessage/:id', routes.seeMessage);
@@ -123,10 +122,8 @@ server.post('/api/message', upload.fields([
     }
   });
 });
-=======
 server.get('/api/contact-suggestions/:userid', routes.getContactSuggestions);
 
->>>>>>> 6d973f4a5b2488d839bbe0ce332325b70ce3e14e
 // static route
 server.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
