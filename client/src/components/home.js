@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/home.css';
-import { withAuth0 } from '@auth0/auth0-react';
 import FollowingContact from './home/following_contact';
 import BlockingContact from './home/blocking_contact';
 import Post from './post';
@@ -33,7 +32,6 @@ class Home extends React.Component {
       postObjects: [],
       showing: '',
       showLoading: false,
-      auth0_avatar_ref: '',
       identity: '',
       room: null,
       suggestedContact: '',
@@ -499,5 +497,5 @@ class Home extends React.Component {
   }
 }
 
-const HomeWithRouter = withRouter(withAuth0(Home));
+const HomeWithRouter = withRouter(Home);
 export default HomeWithRouter;

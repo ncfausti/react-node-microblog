@@ -24,7 +24,7 @@ const upload = multer({ dest: 'uploads/' });
 require('dotenv').config();
 const { Twilio } = require('twilio');
 const routes = require('./routes.js');
-const authRouter = require('./auth');
+// const authRouter = require('./auth');
 
 const server = express();
 
@@ -135,23 +135,23 @@ server.listen(port, () => console.log(`server listening on port ${port}`));
  * Passport Configuration
  */
 
-const strategy = new Auth0Strategy(
-  {
-    domain: process.env.AUTH0_DOMAIN,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL: process.env.AUTH0_CALLBACK_URL,
-  },
-  /**
-   * Access tokens are used to authorize users to an API
-   * (resource server)
-   * accessToken is the token to call the Auth0 API
-   * or a secured third-party API
-   * extraParams.id_token has the JSON Web Token
-   * profile has all the information from the user
-   */
-  (accessToken, refreshToken, extraParams, profile, done) => done(null, profile),
-);
+// const strategy = new Auth0Strategy(
+//   {
+//     domain: process.env.AUTH0_DOMAIN,
+//     clientID: process.env.AUTH0_CLIENT_ID,
+//     clientSecret: process.env.AUTH0_CLIENT_SECRET,
+//     callbackURL: process.env.AUTH0_CALLBACK_URL,
+//   },
+//   /**
+//    * Access tokens are used to authorize users to an API
+//    * (resource server)
+//    * accessToken is the token to call the Auth0 API
+//    * or a secured third-party API
+//    * extraParams.id_token has the JSON Web Token
+//    * profile has all the information from the user
+//    */
+//   (accessToken, refreshToken, extraParams, profile, done) => done(null, profile),
+// );
 
 /**
  * Generate an Access Token for a chat application user - it generates a random
@@ -206,27 +206,27 @@ server.set('views', path.join(__dirname, 'views'));
 server.set('view engine', 'pug');
 server.use(express.static(path.join(__dirname, 'public')));
 server.use(expressSession(session));
-passport.use(strategy);
-server.use(passport.initialize());
-server.use(passport.session());
+// passport.use(strategy);
+// server.use(passport.initialize());
+// server.use(passport.session());
 
-// For sending and receiving values over the wire
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+// // For sending and receiving values over the wire
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+// passport.deserializeUser((user, done) => {
+//   done(null, user);
+// });
 
 // custom middleware with Express
 // Exposes request-level information, such as isAuthenticated
-server.use((req, res, next) => {
-  res.locals.isAuthenticated = req.isAuthenticated();
-  next();
-});
+// server.use((req, res, next) => {
+//   res.locals.isAuthenticated = req.isAuthenticated();
+//   next();
+// });
 
 // Mount the authentication router to the root path
-server.use('/', authRouter);
+// server.use('/', authRouter);
 
 module.exports = server; // for testing

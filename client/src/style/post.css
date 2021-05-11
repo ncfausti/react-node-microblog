@@ -205,3 +205,7 @@
 .post-main-bottom-comments:hover {
   cursor: pointer;
 }
+
+.post-main-bottom-retweets:hover {
+  cursor: pointer;
+}
