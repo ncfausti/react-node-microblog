@@ -7,6 +7,7 @@ const bucketName = 'cis577-messages';
 
 const Messaging = () => {
   const [messages, setMessages] = useState([]);
+  const [sentMessages, setSentMessages] = useState([]);
   const [messageType, setMessageType] = useState('text');
   const [users, setUsers] = useState([]);
   const [thisUser, setThisUser] = useState('feng3116');
@@ -21,12 +22,15 @@ const Messaging = () => {
     };
     Agent.getMessages(thisUser)
       .then((res) => {
-        console.log(res);
         setMessages(res);
       });
     Agent.getUsers()
       .then((res) => {
         setUsers(res);
+      });
+    Agent.getSentMessages(thisUser)
+      .then((res) => {
+        setSentMessages(res);
       });
   }, []);
 
@@ -46,7 +50,7 @@ const Messaging = () => {
     Agent.publishMessage(srcUser, dstUser, text, audio, video, image);
     closeModal();
   };
-  console.log(messages);
+  console.log(sentMessages);
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: '50%' }}>
@@ -84,6 +88,40 @@ const Messaging = () => {
         <button onClick={openModal}>
           Send Private Message
         </button>
+        <div style={{ width: '50%' }}>
+          Your Sent Messages
+          <div>
+            {sentMessages.map((message, index) => (
+                <div key={index}>
+                  <div>
+                    To: {message.dstUser}
+                  </div>
+                  <div>
+                    {message.type === 'text'
+                    && <div>
+                        {message.text}
+                      </div>
+                    }
+                    {message.type === 'image'
+                    && <img src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                      </img>
+                    }
+                    {message.type === 'video'
+                    && <video controls src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                      </video>
+                    }
+                    {message.type === 'audio'
+                    && <audio controls src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                      </audio>
+                    }
+                  </div>
+                  <div>
+                    {message.seen ? 'seen' : 'delivered'}
+                  </div>
+                </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div id="messagingModal" className="modal">
         <div className="modal-content">

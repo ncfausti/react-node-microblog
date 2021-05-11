@@ -74,6 +74,7 @@ server.get('/api/blocking/:id', routes.getBlockings);
 server.post('/api/blocks', routes.addBlock);
 server.delete('/api/blocks', routes.deleteBlock);
 server.get('/api/messages/:username', routes.getMessages);
+server.get('/api/sentMessages/:username', routes.getSentMessages);
 server.post('/api/message', upload.fields([
   { name: 'video', maxCount: 1 },
   { name: 'image', maxCount: 1 },

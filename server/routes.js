@@ -512,6 +512,22 @@ const getMessages = (req, res) => {
   });
 };
 
+const getSentMessages = (req, res) => {
+  const { username } = req.params;
+  const query = `
+    SELECT * FROM Messages
+    WHERE srcUser="${username}";
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
 module.exports = {
   register,
   login,
@@ -535,4 +551,5 @@ module.exports = {
   newComment,
   deleteComment,
   getMessages,
+  getSentMessages,
 };

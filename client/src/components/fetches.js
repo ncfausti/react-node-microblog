@@ -221,6 +221,13 @@ async function getMessages(username) {
   return res.json();
 }
 
+async function getSentMessages(username) {
+  const res = await fetch(`${domain}/api/sentMessages/${username}`, {
+    method: 'GET',
+  });
+  return res.json();
+}
+
 async function publishMessage(srcUser, dstUser, text, audio, video, image) {
   const formData = new FormData();
   formData.append('srcUser', srcUser);
@@ -271,4 +278,5 @@ export default {
   getMessages,
   publishMessage,
   getUsers,
+  getSentMessages,
 };
