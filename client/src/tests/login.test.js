@@ -26,16 +26,20 @@ describe('webpage correctly handles submit & shows msg from server', () => {
   });
 
   test('display success msg when login was ok', async () => {
+    const mockPush = jest.fn().mockImplementation(() => {});
+    const mockProps = { push: mockPush };
     fetch.mockResponseOnce(JSON.stringify({
       status: 'ok',
       msg: 'Login was successfull.',
     }));
 
-    const { getByRole } = render(<Login.WrappedComponent location={mockRouterProps}/>);
+    const { getByRole } = render(
+      <Login.WrappedComponent location={mockProps} history={mockProps}/>,
+    );
     fireEvent.click(getByRole('button', { name: 'Login' }));
 
     await waitFor(() => {
-      expect(screen.getByText('Login was successfull.')).toBeInTheDocument();
+      expect(mockPush).toHaveBeenCalled();
     });
   });
 });

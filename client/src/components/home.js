@@ -36,6 +36,8 @@ class Home extends React.Component {
       auth0_avatar_ref: '',
       identity: '',
       room: null,
+      suggestedContact: '',
+      suggestions: [],
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -61,40 +63,44 @@ class Home extends React.Component {
     this.returnToLobby = this.returnToLobby.bind(this);
     this.updateIdentity = this.updateIdentity.bind(this);
     this.removePlaceholderText = this.removePlaceholderText.bind(this);
+    this.getSuggestions = this.getSuggestions.bind(this);
   }
 
   componentDidMount() {
-    const currentUser = 'feng3116';
-    Agent.getUserByName(currentUser)
-      .then(
-        (result) => {
-          this.setState({
-            userid: result.userid,
-            username: result.username,
-            nickname: result.nickname,
-            email: result.email,
-            summary: result.summary,
-            registration_date: new Date(`${result.registration_date}+00:00`).toLocaleDateString('en-US'),
-            avatar_ref: result.avatar_ref,
-          }, () => {
-            this.getFeed();
-            this.getFollowing();
-            this.getBlocking();
-          });
-        },
-        (error) => {
-          console.log(error);
+    if (this.props.location.state && this.props.location.state.username) {
+      const currentUser = this.props.location.state.username;
+      Agent.getUserByName(currentUser)
+        .then(
+          (result) => {
+            this.setState({
+              userid: result.userid,
+              username: result.username,
+              nickname: result.nickname,
+              email: result.email,
+              summary: result.summary,
+              registration_date: new Date(`${result.registration_date}+00:00`).toLocaleDateString('en-US'),
+              avatar_ref: result.avatar_ref,
+            }, () => {
+              this.getFeed();
+              this.getFollowing();
+              this.getBlocking();
+              this.getSuggestions();
+            });
+          },
+          (error) => {
+            console.log(error);
+          },
+        );
+      this.observer = new IntersectionObserver(
+        this.handleLoading.bind(this),
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: 1.0,
         },
       );
-    this.observer = new IntersectionObserver(
-      this.handleLoading.bind(this),
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1.0,
-      },
-    );
-    this.observer.observe(this.loadingRef);
+      this.observer.observe(this.loadingRef);
+    }
   }
 
   appendFeed(posts) {
@@ -143,14 +149,15 @@ class Home extends React.Component {
     }
   }
 
-  handleFollow() {
-    Agent.getUserByName(this.state.followSearch)
+  handleFollow(name) {
+    Agent.getUserByName(name)
       .then((user) => {
         Agent.addFollow(this.state.userid, user.userid)
           .then(() => {
-            this.setState({ followSearch: '' });
+            this.setState({ followSearch: '', suggestedContact: '' });
             this.getFollowing();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -163,6 +170,7 @@ class Home extends React.Component {
             this.setState({ blockSearch: '' });
             this.getBlocking();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -356,6 +364,15 @@ class Home extends React.Component {
     });
   }
 
+  getSuggestions() {
+    Agent.getContactSuggestions(this.state.userid).then((res) => {
+      const suggestions = res.map((user, i) => <option key={i}>
+        {user.username}
+      </option>);
+      this.setState({ suggestions });
+    });
+  }
+
   render() {
     const disabled = this.state.identity === '';
     const { user } = this.props.auth0;
@@ -428,7 +445,7 @@ class Home extends React.Component {
           </div>
         </div>
         <div className="cols" id="col3">
-          <div id="contact-title">My Contacts:</div>
+          <div className="contact-title">My Contacts:</div>
           <div id="following">
             <input
             type="text"
@@ -436,7 +453,7 @@ class Home extends React.Component {
             value={this.state.followSearch}
             onChange={(e) => this.setState({ followSearch: e.target.value })}
             />
-            <button onClick={this.handleFollow}>Follow</button>
+            <button onClick={() => this.handleFollow(this.state.followSearch)}>Follow</button>
             <div id="following-list">
               <div>Currently following:</div>
               {this.state.following}
@@ -454,6 +471,22 @@ class Home extends React.Component {
               <div>Currently blocking:</div>
               {this.state.blocking}
             </div>
+          </div>
+          <div className="sug-title">New Contacts for You:</div>
+          <div id="suggestion-container">
+            <input
+              list="suggestions"
+              type="text"
+              placeholder="Contact suggestions"
+              value={this.state.suggestedContact}
+              onChange={(e) => this.setState({ suggestedContact: e.target.value })}
+            />
+            <datalist id="suggestions">
+              {this.state.suggestions}
+            </datalist>
+            <button onClick={() => this.handleFollow(this.state.suggestedContact)}>
+              Follow
+            </button>
           </div>
         </div>
       </div>
