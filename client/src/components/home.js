@@ -375,17 +375,15 @@ class Home extends React.Component {
 
   render() {
     const disabled = this.state.identity === '';
-    const { user } = this.props.auth0;
-    const { name, picture, email } = user;
     return (
       <div id="home-root">
         <div className="cols" id="col1">
-          <img id="col1-avatar" alt="avatar" src={picture} />
+          <img id="col1-avatar" alt="avatar" src={this.state.avatar_ref} />
           <p>MY INFORMATION</p>
           <div id="user-info">
-            <div><span>Nickname: </span>{this.state.nickname}{name}</div>
+            <div><span>Nickname: </span>{this.state.nickname}</div>
             <div><span>Username: </span>{this.state.username}</div>
-            <div><span>Email: </span>{this.state.email}{email}</div>
+            <div><span>Email: </span>{this.state.email}</div>
             <div><span>Registered on: </span>{this.state.registration_date}</div>
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>

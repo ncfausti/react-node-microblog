@@ -11,7 +11,6 @@ import Login from './components/login';
 import Messaging from './components/messaging';
 import ResetPassword from './components/reset_password';
 import Home from './components/home';
-import ProtectedRoute from './auth/protected-route';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
@@ -28,13 +27,12 @@ class App extends React.Component {
                 <Login />
               )}
             />
-            <ProtectedRoute
+            <Route
               exact
               path="/home"
-              // render={() => (
-              //   <Home />
-              // )}
-              component={Home}
+              render={() => (
+                <Home />
+              )}
             />
             <Route
               exact
