@@ -45,6 +45,7 @@ server.post('/api/post', routes.createPost);
 server.get('/api/posts', routes.getPosts);
 server.delete('/api/post/:postid', routes.deletePost);
 server.post('/api/hide', routes.hidePost);
+server.get('/api/hide-by-post/:postid', routes.getHidesByPost);
 server.get('/api/feed/:userid', routes.getFeed);
 server.get('/api/posts-by-user/:userid', routes.getPostsByUser);
 server.post('/api/comment', routes.newComment);
@@ -56,6 +57,7 @@ server.delete('/api/follows', routes.deleteFollow);
 server.get('/api/blocking/:id', routes.getBlockings);
 server.post('/api/blocks', routes.addBlock);
 server.delete('/api/blocks', routes.deleteBlock);
+server.get('/api/contact-suggestions/:userid', routes.getContactSuggestions);
 
 // static route
 server.get('*', (req, res) => {

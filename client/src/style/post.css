@@ -128,7 +128,7 @@
 }
 
 .post-main-bottom-retweets img {
-  width: 1.4em;
+  width: 1.35em;
 }
 
 .post-main-bottom-likes {
@@ -140,6 +140,26 @@
 
 .post-main-bottom-likes img {
   width: 1.4em;
+}
+
+.post-analysis {
+  padding: 15px 15px 15px 25px;
+  border-color: rgb(186, 186, 186);
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0px;
+  font-size: 16px;
+}
+
+.post-analysis-comments {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.post-analysis-hides {
+  margin-left: 20px;
+  font-weight: bold;
 }
 
 .edit-comment {
@@ -174,6 +194,11 @@
 }
 
 .post-main-bottom-comments:focus, .post-main-bottom-comments:active {
+  box-shadow: 0 0 4px 4px rgb(126, 196, 219);
+}
+
+
+.post-main-bottom-retweets:focus, .post-main-bottom-retweets:active {
   box-shadow: 0 0 4px 4px rgb(126, 196, 219);
 }
 
