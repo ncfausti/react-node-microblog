@@ -339,7 +339,7 @@ class Home extends React.Component {
       const response = await fetch(`https://token-service-2480-dev.twil.io/token?identity=${this.state.identity}`);
       const data = await response.json();
       const room = await connect(data.accessToken, {
-        name: this.state.username || 'nicks-room', // Use auth0 username here
+        name: 'test-room',
         audio: true,
         video: true,
       });
@@ -396,8 +396,8 @@ class Home extends React.Component {
              onChange={this.updateIdentity}
               ref={this.inputRef}
               onClick={this.removePlaceholderText}
-               placeholder={this.state.username || 'nick'}/>
-            <button disabled={disabled} onClick={this.joinRoom}>Create Room</button>
+               placeholder={"What's your name?"}/>
+            <button disabled={disabled} onClick={this.joinRoom}>Join Room</button>
           </div>
           : <Room returnToLobby={this.returnToLobby} room={this.state.room} />
       }
