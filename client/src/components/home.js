@@ -155,6 +155,7 @@ class Home extends React.Component {
             this.setState({ blockSearch: '' });
             this.getBlocking();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -319,11 +320,12 @@ class Home extends React.Component {
   }
 
   getSuggestions() {
-    const userlist = [{ username: 'feng' }, { username: 'admin' }, { username: 'feng' }];
-    const suggestions = userlist.map((user, i) => <option key={i}>
-      {user.username}
-    </option>);
-    this.setState({ suggestions });
+    Agent.getContactSuggestions(this.state.userid).then((res) => {
+      const suggestions = res.map((user, i) => <option key={i}>
+        {user.username}
+      </option>);
+      this.setState({ suggestions });
+    });
   }
 
   render() {
@@ -407,12 +409,12 @@ class Home extends React.Component {
               {this.state.blocking}
             </div>
           </div>
-          <div className="contact-title">New Contacts for You:</div>
+          <div className="sug-title">New Contacts for You:</div>
           <div id="suggestion-container">
             <input
               list="suggestions"
               type="text"
-              placeholder="Suggestions for you"
+              placeholder="Contact suggestions"
               value={this.state.suggestedContact}
               onChange={(e) => this.setState({ suggestedContact: e.target.value })}
             />

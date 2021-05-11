@@ -504,6 +504,51 @@ const deleteComment = (req, res) => {
   });
 };
 
+const getHidesByPost = (req, res) => {
+  const postid = parseInt(req.params.postid, 10);
+  const query = `
+    SELECT DISTINCT u.*
+    FROM Hides h JOIN User u
+      ON h.userid=u.userid
+    WHERE h.postid=?;
+  `;
+  connection.query(query, [postid], (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
+const getContactSuggestions = (req, res) => {
+  const userid = parseInt(req.params.userid, 10);
+  const query = `
+    SELECT *
+    FROM User
+    WHERE userid NOT IN (
+      SELECT user1
+      FROM Follows
+      WHERE user0=?
+    ) AND userid NOT IN (
+      SELECT user1
+      FROM Blocks
+      WHERE user0=?
+    )
+    ORDER BY RAND()
+    LIMIT 5;
+  `;
+  connection.query(query, [userid, userid], (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
 module.exports = {
   register,
   login,
@@ -526,4 +571,6 @@ module.exports = {
   deleteBlock,
   newComment,
   deleteComment,
+  getHidesByPost,
+  getContactSuggestions,
 };
