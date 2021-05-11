@@ -261,6 +261,16 @@ async function getUsers() {
   return res.json();
 }
 
+async function getHidesByPost(postid) {
+  const res = await fetch(`${domain}/api/hide-by-post/${postid}`);
+  return res.json();
+}
+
+async function getContactSuggestions(userid) {
+  const res = await fetch(`${domain}/api/contact-suggestions/${userid}`);
+  return res.json();
+}
+
 export default {
   addFollow,
   addBlock,
@@ -287,4 +297,6 @@ export default {
   getUsers,
   getSentMessages,
   seeMessage,
+  getHidesByPost,
+  getContactSuggestions,
 };

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.5.0",
+    "@auth0/auth0-spa-js": "^1.15.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
@@ -11,6 +13,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.22.0",
+    "isomorphic-fetch": "^3.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
@@ -18,10 +21,12 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "4.0.2",
     "react-test-renderer": "^17.0.2",
+    "twilio-video": "^2.13.1",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
+    "startauth": "cross-env PORT=3000 react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint \"./**/*.js\"",
@@ -46,14 +51,18 @@
     ]
   },
   "devDependencies": {
-    "isomorphic-fetch": "^3.0.0",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "babel-jest": "^26.6.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.22.0",
     "fetch-mock": "^9.10.7",
     "geckodriver": "^1.22.2",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.6.0",
+    "isomorphic-fetch": "^3.0.0",
     "jest-fetch-mock": "^3.0.3",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },

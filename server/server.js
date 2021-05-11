@@ -22,7 +22,9 @@ const bucketName = 'cis577-messages';
 const upload = multer({ dest: 'uploads/' });
 
 require('dotenv').config();
+const { Twilio } = require('twilio');
 const routes = require('./routes.js');
+const authRouter = require('./auth');
 
 const server = express();
 
@@ -62,6 +64,7 @@ server.post('/api/post', routes.createPost);
 server.get('/api/posts', routes.getPosts);
 server.delete('/api/post/:postid', routes.deletePost);
 server.post('/api/hide', routes.hidePost);
+server.get('/api/hide-by-post/:postid', routes.getHidesByPost);
 server.get('/api/feed/:userid', routes.getFeed);
 server.get('/api/posts-by-user/:userid', routes.getPostsByUser);
 server.post('/api/comment', routes.newComment);
@@ -73,6 +76,7 @@ server.delete('/api/follows', routes.deleteFollow);
 server.get('/api/blocking/:id', routes.getBlockings);
 server.post('/api/blocks', routes.addBlock);
 server.delete('/api/blocks', routes.deleteBlock);
+<<<<<<< HEAD
 server.get('/api/messages/:username', routes.getMessages);
 server.get('/api/sentMessages/:username', routes.getSentMessages);
 server.put('/api/seeMessage/:id', routes.seeMessage);
@@ -119,6 +123,10 @@ server.post('/api/message', upload.fields([
     }
   });
 });
+=======
+server.get('/api/contact-suggestions/:userid', routes.getContactSuggestions);
+
+>>>>>>> 6d973f4a5b2488d839bbe0ce332325b70ce3e14e
 // static route
 server.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
@@ -149,7 +157,53 @@ const strategy = new Auth0Strategy(
 );
 
 /**
- * Server configuration for passport
+ * Generate an Access Token for a chat application user - it generates a random
+ * username for the client requesting a token, and takes a device ID as a query
+ * parameter.
+ */
+server.get('/token', (request, response) => {
+  const { identity } = request.query;
+
+  const { AccessToken } = Twilio.jwt;
+  const MAX_ALLOWED_SESSION_DURATION = 3600;
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created.
+  const token = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_API_KEY,
+    process.env.TWILIO_API_SECRET,
+    { ttl: MAX_ALLOWED_SESSION_DURATION },
+  );
+
+  // Assign the generated identity to the token.
+  token.identity = identity;
+
+  const { VideoGrant } = AccessToken;
+  const videoGrant = new VideoGrant();
+  token.addGrant(videoGrant);
+
+  const { ChatGrant } = AccessToken;
+
+  const chatGrant = new ChatGrant({
+    serviceSid: context.SERVICE_SID,
+  });
+  token.addGrant(chatGrant);
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*', // change this to your client-side URL
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
+  };
+
+  response.setHeaders(headers);
+
+  // Serialize the token to a JWT string.
+  response.send(token.toJwt());
+});
+
+/**
+ * Server/App configuration for passport
  */
 server.set('views', path.join(__dirname, 'views'));
 server.set('view engine', 'pug');
@@ -167,5 +221,15 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+
+// custom middleware with Express
+// Exposes request-level information, such as isAuthenticated
+server.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
+
+// Mount the authentication router to the root path
+server.use('/', authRouter);
 
 module.exports = server; // for testing

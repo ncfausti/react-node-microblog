@@ -1,10 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/home.css';
+import { withAuth0 } from '@auth0/auth0-react';
 import FollowingContact from './home/following_contact';
 import BlockingContact from './home/blocking_contact';
 import Post from './post';
 import Agent from './fetches';
+import Room from './Room';
+
+const { connect } = require('twilio-video');
 
 class Home extends React.Component {
   constructor(props) {
@@ -29,6 +33,11 @@ class Home extends React.Component {
       postObjects: [],
       showing: '',
       showLoading: false,
+      suggestedContact: '',
+      suggestions: [],
+      auth0_avatar_ref: '',
+      identity: '',
+      room: null,
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -48,6 +57,12 @@ class Home extends React.Component {
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleUploadMedia = this.handleUploadMedia.bind(this);
     this.appendFeed = this.appendFeed.bind(this);
+    this.getSuggestions = this.getSuggestions.bind(this);
+    this.inputRef = React.createRef();
+    this.joinRoom = this.joinRoom.bind(this);
+    this.returnToLobby = this.returnToLobby.bind(this);
+    this.updateIdentity = this.updateIdentity.bind(this);
+    this.removePlaceholderText = this.removePlaceholderText.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +82,7 @@ class Home extends React.Component {
             this.getFeed();
             this.getFollowing();
             this.getBlocking();
+            this.getSuggestions();
           });
         },
         (error) => {
@@ -130,14 +146,15 @@ class Home extends React.Component {
     }
   }
 
-  handleFollow() {
-    Agent.getUserByName(this.state.followSearch)
+  handleFollow(name) {
+    Agent.getUserByName(name)
       .then((user) => {
         Agent.addFollow(this.state.userid, user.userid)
           .then(() => {
-            this.setState({ followSearch: '' });
+            this.setState({ followSearch: '', suggestedContact: '' });
             this.getFollowing();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -150,6 +167,7 @@ class Home extends React.Component {
             this.setState({ blockSearch: '' });
             this.getBlocking();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -313,19 +331,76 @@ class Home extends React.Component {
     this.setState({ prevY: y === 0 ? 1e7 : y });
   }
 
+  getSuggestions() {
+    Agent.getContactSuggestions(this.state.userid).then((res) => {
+      const suggestions = res.map((user, i) => <option key={i}>
+        {user.username}
+      </option>);
+      this.setState({ suggestions });
+    });
+  }
+
+  async joinRoom() {
+    try {
+      const response = await fetch(`https://token-service-2480-dev.twil.io/token?identity=${this.state.identity}`);
+      const data = await response.json();
+      const room = await connect(data.accessToken, {
+        name: this.state.username || 'nicks-room', // Use auth0 username here
+        audio: true,
+        video: true,
+      });
+
+      this.setState({ room });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  returnToLobby() {
+    this.setState({ room: null });
+  }
+
+  removePlaceholderText() {
+    this.inputRef.current.placeholder = '';
+  }
+
+  updateIdentity(event) {
+    this.setState({
+      identity: event.target.value,
+    });
+  }
+
   render() {
+    const disabled = this.state.identity === '';
+    const { user } = this.props.auth0;
+    const { name, picture, email } = user;
     return (
       <div id="home-root">
         <div className="cols" id="col1">
-          <img id="col1-avatar" alt="avatar" src={this.state.avatar_ref} />
+          <img id="col1-avatar" alt="avatar" src={picture} />
           <p>MY INFORMATION</p>
           <div id="user-info">
-            <div><span>Nickname: </span>{this.state.nickname}</div>
+            <div><span>Nickname: </span>{this.state.nickname}{name}</div>
             <div><span>Username: </span>{this.state.username}</div>
-            <div><span>Email: </span>{this.state.email}</div>
+            <div><span>Email: </span>{this.state.email}{email}</div>
             <div><span>Registered on: </span>{this.state.registration_date}</div>
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>
+            <div>
+            {
+        this.state.room === null
+          ? <div className="lobby">
+             <input
+             value={this.state.identity}
+             onChange={this.updateIdentity}
+              ref={this.inputRef}
+              onClick={this.removePlaceholderText}
+               placeholder={this.state.username || 'nick'}/>
+            <button disabled={disabled} onClick={this.joinRoom}>Create Room</button>
+          </div>
+          : <Room returnToLobby={this.returnToLobby} room={this.state.room} />
+      }
+            </div>
           </div>
           <button onClick={() => { window.location.href = '/messaging'; }}>Private Message </button>
           <button onClick={this.handleMyPosts}>View My Posts Only</button>
@@ -368,7 +443,7 @@ class Home extends React.Component {
           </div>
         </div>
         <div className="cols" id="col3">
-          <div id="contact-title">My Contacts:</div>
+          <div className="contact-title">My Contacts:</div>
           <div id="following">
             <input
             type="text"
@@ -376,7 +451,7 @@ class Home extends React.Component {
             value={this.state.followSearch}
             onChange={(e) => this.setState({ followSearch: e.target.value })}
             />
-            <button onClick={this.handleFollow}>Follow</button>
+            <button onClick={() => this.handleFollow(this.state.followSearch)}>Follow</button>
             <div id="following-list">
               <div>Currently following:</div>
               {this.state.following}
@@ -395,11 +470,27 @@ class Home extends React.Component {
               {this.state.blocking}
             </div>
           </div>
+          <div className="sug-title">New Contacts for You:</div>
+          <div id="suggestion-container">
+            <input
+              list="suggestions"
+              type="text"
+              placeholder="Contact suggestions"
+              value={this.state.suggestedContact}
+              onChange={(e) => this.setState({ suggestedContact: e.target.value })}
+            />
+            <datalist id="suggestions">
+              {this.state.suggestions}
+            </datalist>
+            <button onClick={() => this.handleFollow(this.state.suggestedContact)}>
+              Follow
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-const HomeWithRouter = withRouter(Home);
+const HomeWithRouter = withRouter(withAuth0(Home));
 export default HomeWithRouter;

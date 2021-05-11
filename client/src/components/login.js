@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import AuthenticationButton from './authentication-button';
 import '../style/login.css';
 import Agent from './fetches';
 
@@ -54,13 +55,14 @@ class Login extends React.Component {
   }
 
   render() {
+    // const { user } = this.props.auth0;
+    // const { name, picture, email } = user;
     return (
       <div className="root">
         <div className="topbar">
           <a id="title" href="/">MicroBlog</a>
           <div className="topbar-right">
-            <a id="login-active" href="/login">Login</a>
-            <a id="signup" href="/register">Signup</a>
+            <AuthenticationButton />
           </div>
         </div>
         <div id="errMsg">
@@ -85,10 +87,12 @@ class Login extends React.Component {
               onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}/>
+
+            {/* <button type="submit">
             <a href="/password">Forgot your password?</a>
             <button type="submit">
               Login
-            </button>
+            </button> */}
           </form>
         </div>
       </div>
