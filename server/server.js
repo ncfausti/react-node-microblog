@@ -5,6 +5,7 @@ const expressSession = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 require('dotenv').config();
+const { Twilio } = require('twilio');
 const routes = require('./routes.js');
 const authRouter = require('./auth');
 
@@ -86,6 +87,52 @@ const strategy = new Auth0Strategy(
    */
   (accessToken, refreshToken, extraParams, profile, done) => done(null, profile),
 );
+
+/**
+ * Generate an Access Token for a chat application user - it generates a random
+ * username for the client requesting a token, and takes a device ID as a query
+ * parameter.
+ */
+server.get('/token', (request, response) => {
+  const { identity } = request.query;
+
+  const { AccessToken } = Twilio.jwt;
+  const MAX_ALLOWED_SESSION_DURATION = 3600;
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created.
+  const token = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_API_KEY,
+    process.env.TWILIO_API_SECRET,
+    { ttl: MAX_ALLOWED_SESSION_DURATION },
+  );
+
+  // Assign the generated identity to the token.
+  token.identity = identity;
+
+  const { VideoGrant } = AccessToken;
+  const videoGrant = new VideoGrant();
+  token.addGrant(videoGrant);
+
+  const { ChatGrant } = AccessToken;
+
+  const chatGrant = new ChatGrant({
+    serviceSid: context.SERVICE_SID,
+  });
+  token.addGrant(chatGrant);
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*', // change this to your client-side URL
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
+  };
+
+  response.setHeaders(headers);
+
+  // Serialize the token to a JWT string.
+  response.send(token.toJwt());
+});
 
 /**
  * Server/App configuration for passport
