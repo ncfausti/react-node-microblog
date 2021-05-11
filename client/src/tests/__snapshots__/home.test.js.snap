@@ -1,0 +1,223 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page matches snapshot 1`] = `
+<div
+  id="home-root"
+>
+  <div
+    className="cols"
+    id="col1"
+  >
+    <img
+      alt="avatar"
+      id="col1-avatar"
+      src=""
+    />
+    <p>
+      MY INFORMATION
+    </p>
+    <div
+      id="user-info"
+    >
+      <div>
+        <span>
+          Nickname: 
+        </span>
+        
+      </div>
+      <div>
+        <span>
+          Username: 
+        </span>
+        
+      </div>
+      <div>
+        <span>
+          Email: 
+        </span>
+        
+      </div>
+      <div>
+        <span>
+          Registered on: 
+        </span>
+        
+      </div>
+      <div>
+        <span>
+          Summary:
+        </span>
+      </div>
+      <div>
+        
+      </div>
+    </div>
+    <button
+      onClick={[Function]}
+    >
+      View My Posts Only
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      Explore All Posts
+    </button>
+    <button
+      id="logout-btn"
+      onClick={[Function]}
+    >
+      Log Out
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      Reset Password
+    </button>
+    <button
+      className="bg-red"
+      onClick={[Function]}
+    >
+      Deactivate This Account
+    </button>
+  </div>
+  <div
+    className="cols"
+    id="col2"
+  >
+    <div
+      id="new-post"
+    >
+      <textarea
+        id="new-post-input"
+        onChange={[Function]}
+        placeholder="What's happening?"
+        value=""
+      />
+      <div
+        id="media-attach"
+      >
+        <img
+          src=""
+        />
+      </div>
+    </div>
+    <div
+      id="submit-group"
+    >
+      <div>
+        <label
+          htmlFor="img-upload"
+        >
+          <img
+            src="data:image/svg+xml;base64,PHN2ZyBpZD0iX3gzMV8iIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iNTEyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnPjxwYXRoIGQ9Im0xNy40NTMgMjRjLS4xNjggMC0uMzQtLjAyMS0uNTEtLjA2NmwtMTUuNDYzLTQuMTQxYy0xLjA2LS4yOTItMS42OTItMS4zOS0xLjQxNC0yLjQ1bDEuOTUxLTcuMjcyYy4wNzItLjI2Ny4zNDYtLjQyMi42MTItLjM1NC4yNjcuMDcxLjQyNS4zNDYuMzU0LjYxMmwtMS45NSA3LjI3Yy0uMTM5LjUzLjE3OSAxLjA4Mi43MSAxLjIyOWwxNS40NTcgNC4xMzljLjUzMS4xNCAxLjA3OS0uMTc2IDEuMjE3LS43MDRsLjc4MS0yLjg5NGMuMDcyLS4yNjcuMzQ2LS40MjYuNjEzLS4zNTMuMjY3LjA3Mi40MjQuMzQ3LjM1My42MTNsLS43OCAyLjg5Yy0uMjM1Ljg5LTEuMDQ1IDEuNDgxLTEuOTMxIDEuNDgxeiIvPjwvZz48Zz48cGF0aCBkPSJtMjIgMThoLTE2Yy0xLjEwMyAwLTItLjg5Ny0yLTJ2LTEyYzAtMS4xMDMuODk3LTIgMi0yaDE2YzEuMTAzIDAgMiAuODk3IDIgMnYxMmMwIDEuMTAzLS44OTcgMi0yIDJ6bS0xNi0xNWMtLjU1MSAwLTEgLjQ0OS0xIDF2MTJjMCAuNTUxLjQ0OSAxIDEgMWgxNmMuNTUxIDAgMS0uNDQ5IDEtMXYtMTJjMC0uNTUxLS40NDktMS0xLTF6Ii8+PC9nPjxnPjxwYXRoIGQ9Im05IDljLTEuMTAzIDAtMi0uODk3LTItMnMuODk3LTIgMi0yIDIgLjg5NyAyIDItLjg5NyAyLTIgMnptMC0zYy0uNTUxIDAtMSAuNDQ5LTEgMXMuNDQ5IDEgMSAxIDEtLjQ0OSAxLTEtLjQ0OS0xLTEtMXoiLz48L2c+PGc+PHBhdGggZD0ibTQuNTcgMTYuOTNjLS4xMjggMC0uMjU2LS4wNDktLjM1NC0uMTQ2LS4xOTUtLjE5NS0uMTk1LS41MTIgMC0uNzA3bDQuNzIzLTQuNzIzYy41NjYtLjU2NiAxLjU1NS0uNTY2IDIuMTIxIDBsMS40MDYgMS40MDYgMy44OTItNC42N2MuMjgzLS4zMzkuNjk5LS41MzYgMS4xNDItLjU0aC4wMTFjLjQzOCAwIC44NTMuMTkgMS4xMzkuNTIzbDUuMjMgNi4xMDJjLjE4LjIwOS4xNTYuNTI1LS4wNTQuNzA1LS4yMDkuMTgtLjUyNC4xNTctLjcwNS0uMDU0bC01LjIzLTYuMTAyYy0uMDk3LS4xMTItLjIzMS0uMTc0LS4zOC0uMTc0LS4xMDQtLjAwOS0uMjg3LjA2My0uMzg0LjE4bC00LjI0MyA1LjA5MWMtLjA5LjEwOC0uMjIxLjE3My0uMzYyLjE3OS0uMTQyLjAxLS4yNzctLjA0Ni0uMzc2LS4xNDZsLTEuNzkzLTEuNzkzYy0uMTg5LS4xODgtLjUxOC0uMTg4LS43MDcgMGwtNC43MjMgNC43MjNjLS4wOTcuMDk3LS4yMjUuMTQ2LS4zNTMuMTQ2eiIvPjwvZz48L3N2Zz4="
+          />
+        </label>
+        <input
+          id="img-upload"
+          onChange={[Function]}
+          type="file"
+        />
+      </div>
+      <button
+        id="submit-post"
+        onClick={[Function]}
+      >
+        Share with friends
+      </button>
+    </div>
+    <div
+      id="feed-items"
+    />
+    <div
+      id="feed-loading"
+      style={
+        Object {
+          "display": "none",
+        }
+      }
+    >
+      <span>
+        Loading...
+      </span>
+    </div>
+  </div>
+  <div
+    className="cols"
+    id="col3"
+  >
+    <div
+      className="contact-title"
+    >
+      My Contacts:
+    </div>
+    <div
+      id="following"
+    >
+      <input
+        onChange={[Function]}
+        placeholder="Search a new user..."
+        type="text"
+        value=""
+      />
+      <button
+        onClick={[Function]}
+      >
+        Follow
+      </button>
+      <div
+        id="following-list"
+      >
+        <div>
+          Currently following:
+        </div>
+      </div>
+    </div>
+    <div
+      id="blocking"
+    >
+      <input
+        onChange={[Function]}
+        placeholder="Search a new user..."
+        type="text"
+        value=""
+      />
+      <button
+        onClick={[Function]}
+      >
+        Block
+      </button>
+      <div
+        id="blocking-list"
+      >
+        <div>
+          Currently blocking:
+        </div>
+      </div>
+    </div>
+    <div
+      className="sug-title"
+    >
+      New Contacts for You:
+    </div>
+    <div
+      id="suggestion-container"
+    >
+      <input
+        list="suggestions"
+        onChange={[Function]}
+        placeholder="Contact suggestions"
+        type="text"
+        value=""
+      />
+      <datalist
+        id="suggestions"
+      />
+      <button
+        onClick={[Function]}
+      >
+        Follow
+      </button>
+    </div>
+  </div>
+</div>
+`;
