@@ -31,7 +31,7 @@ class Participant extends Component {
   render() {
     return (
       <div className="participant" id={this.props.participant.identity}>
-        <div className="identity">{ this.props.participant.identity} # of Viewers:{ document.getElementsByTagName('video').length}</div>
+        <div className="identity">{ this.props.participant.identity}</div>
         {
           this.state.tracks.map((track) => <Track key={track}
           filter={this.state.filter} track={track}/>)

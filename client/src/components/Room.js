@@ -50,6 +50,7 @@ class Room extends Component {
   render() {
     return (
       <div className="room">
+        # Number of Participants: {this.state.remoteParticipants.length + 1}
         <div className = "participants">
           <Participant key={this.props.room.localParticipant.identity} localParticipant="true" participant={this.props.room.localParticipant}/>
           {
@@ -57,6 +58,7 @@ class Room extends Component {
             key={participant.identity} participant={participant}/>)
           }
         </div>
+
         <button id="leaveRoom" onClick={this.leaveRoom}>Leave Room</button>
       </div>
     );
