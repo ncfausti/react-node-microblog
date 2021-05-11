@@ -60,8 +60,7 @@ class Login extends React.Component {
         <div className="topbar">
           <a id="title" href="/">MicroBlog</a>
           <div className="topbar-right">
-            <a id="login-active" href="/login">Login</a>
-            <a id="signup" href="/register">Signup</a>
+            <AuthenticationButton />
           </div>
         </div>
         <div id="errMsg">
@@ -92,7 +91,6 @@ class Login extends React.Component {
             <button type="submit">
               Login
             </button> */}
-            <AuthenticationButton />
           </form>
         </div>
       </div>
