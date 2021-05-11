@@ -9,7 +9,7 @@ const Messaging = () => {
   const [messages, setMessages] = useState([]);
   const [messageType, setMessageType] = useState('text');
   const [users, setUsers] = useState([]);
-  const [thisUser, setThisUser] = useState('Teddy1984');
+  const [thisUser, setThisUser] = useState('feng3116');
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
   const [image, setImage] = useState();
@@ -21,11 +21,11 @@ const Messaging = () => {
     };
     Agent.getMessages(thisUser)
       .then((res) => {
+        console.log(res);
         setMessages(res);
       });
     Agent.getUsers()
       .then((res) => {
-        console.log(res);
         setUsers(res);
       });
   }, []);
@@ -38,10 +38,6 @@ const Messaging = () => {
     document.getElementById('messagingModal').style.display = 'none';
   };
 
-  const uploadMedia = async (e) => {
-    const file = e.target.files[0];
-  };
-
   const sendMessage = () => {
     const srcUser = thisUser;
     const dstUser = document.getElementById('dstUsers').value;
@@ -50,24 +46,38 @@ const Messaging = () => {
     Agent.publishMessage(srcUser, dstUser, text, audio, video, image);
     closeModal();
   };
+  console.log(messages);
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: '50%' }}>
         Your Private Messages
         <div>
-          {messages.map((message, index) => {
-            console.log(message);
-            return (
-              <div key={index} style={{ display: 'flex' }}>
+          {messages.map((message, index) => (
+              <div key={index}>
                 <div>
                   From: {message.srcUser}
                 </div>
                 <div>
-                  {message.text}
+                  {message.type === 'text'
+                  && <div>
+                      {message.text}
+                    </div>
+                  }
+                  {message.type === 'image'
+                  && <img src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                    </img>
+                  }
+                  {message.type === 'video'
+                  && <video controls src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                    </video>
+                  }
+                  {message.type === 'audio'
+                  && <audio controls src={message.mediaUrl} style={{ maxHeight: '200px' }}>
+                    </audio>
+                  }
                 </div>
               </div>
-            );
-          })}
+          ))}
         </div>
       </div>
       <div style={{ width: '50%' }}>

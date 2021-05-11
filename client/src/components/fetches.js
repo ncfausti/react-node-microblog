@@ -222,19 +222,22 @@ async function getMessages(username) {
 }
 
 async function publishMessage(srcUser, dstUser, text, audio, video, image) {
+  const formData = new FormData();
+  formData.append('srcUser', srcUser);
+  formData.append('dstUser', dstUser);
+  if (text) {
+    formData.append('text', text);
+  } else if (audio) {
+    formData.append('audio', audio);
+  } else if (video) {
+    formData.append('video', video);
+  } else if (image) {
+    formData.append('image', image);
+  }
+
   const res = await fetch(`${domain}/api/message`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      srcUser,
-      dstUser,
-      text,
-      audio,
-      video,
-      image,
-    }),
+    body: formData,
   });
   return res.json();
 }

@@ -85,13 +85,17 @@ server.post('/api/message', upload.fields([
   } = req.body;
   const files = JSON.parse(JSON.stringify(req.files));
   let asset = null;
+  let type = 'text';
   let mediaUrl = null;
   if (files.video) {
     asset = files.video[0].path;
+    type = 'video';
   } else if (files.audio) {
     asset = files.audio[0].path;
+    type = 'audio';
   } else if (files.image) {
     asset = files.image[0].path;
+    type = 'image';
   }
   if (asset) {
     const imageId = v4();
@@ -101,10 +105,10 @@ server.post('/api/message', upload.fields([
     mediaUrl = `https://storage.googleapis.com/cis577-messages/${imageId}`;
   }
   const query = `
-    INSERT INTO Messages (srcUser, dstUser, text, media)
-    VALUES (?, ?, ?, ?);
+    INSERT INTO Messages (srcUser, dstUser, text, mediaUrl, type)
+    VALUES (?, ?, ?, ?, ?);
   `;
-  connection.query(query, [srcUser, dstUser, text, mediaUrl], (err) => {
+  connection.query(query, [srcUser, dstUser, text, mediaUrl, type], (err) => {
     if (err) {
       res.status(400).json({ status: 'err' });
       console.log(err);
