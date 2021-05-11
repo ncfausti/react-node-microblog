@@ -90,12 +90,12 @@ const Messaging = () => {
         </div>
       </div>
       <div style={{ width: '50%' }}>
-        <button onClick={openModal}>
+        <button id={'msgModalBtn'} onClick={openModal}>
           Send Private Message
         </button>
         <div style={{ width: '50%' }}>
           Your Sent Messages
-          <div>
+          <div id='sentMessages'>
             {sentMessages.map((message, index) => (
                 <div key={index}>
                   <div>
@@ -168,7 +168,7 @@ const Messaging = () => {
           {messageType === 'video'
             && <input onChange={(e) => { setVideo(e.target.files[0]); }} id={'video-upload'} type="file" accept='.mp4,.mpeg,.mov'/>
           }
-          <button style={{ width: '15%' }} onClick={sendMessage}>
+          <button style={{ width: '15%' }} onClick={sendMessage} id={'sendMsgBtn'}>
             Send Message
           </button>
 
