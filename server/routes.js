@@ -484,7 +484,7 @@ const newComment = (req, res) => {
       res.status(400).json({ status: 'err' });
       console.log(err);
     } else {
-      res.status(200).json({ status: 'ok' });
+      res.status(201).json({ status: 'ok' });
     }
   });
 };
