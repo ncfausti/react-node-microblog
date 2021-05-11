@@ -76,21 +76,27 @@
     max-width: 450px;
   }
 
-  label {
+  .register label {
     font-size: 14px;
     font-weight: bold;
   }
 
+  .register a {
+    float: right;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
   .register input{
     width: 100%;
-    margin: 20px 0 20px 0;
+    margin: 20px 0 15px 0;
     padding: 10px 14px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
 
-  button {
+  .register button {
     width: 100%;
     font-size: 16px;
     margin-top: 10px;

@@ -1,0 +1,14 @@
+#post-dropdown  {
+  float:right;
+}
+  
+#post-dropdown .dropdown-menu {
+  font-size: 0.88rem;
+  line-height: 10px;
+}
+
+#post-dropdown .btn {
+  font-size: 0.85rem;
+  line-height: 1.0;
+  padding: 0.20rem 0.4rem;
+}
