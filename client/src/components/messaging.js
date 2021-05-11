@@ -22,6 +22,11 @@ const Messaging = () => {
     };
     Agent.getMessages(thisUser)
       .then((res) => {
+        res.forEach((message) => {
+          if (!message.seen) {
+            Agent.seeMessage(message.idMessages);
+          }
+        });
         setMessages(res);
       });
     Agent.getUsers()

@@ -1,3 +1,4 @@
+const { json } = require('express');
 const mysql = require('mysql');
 const config = require('./db-config.js');
 
@@ -528,6 +529,20 @@ const getSentMessages = (req, res) => {
   });
 };
 
+const seeMessage = (req, res) => {
+  const { id } = req.params;
+  const query = `
+    UPDATE Messages SET seen = 1 WHERE idMessages = ${id};
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
 module.exports = {
   register,
   login,
@@ -552,4 +567,5 @@ module.exports = {
   deleteComment,
   getMessages,
   getSentMessages,
+  seeMessage,
 };
