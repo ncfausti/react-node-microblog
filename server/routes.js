@@ -496,6 +496,22 @@ const deleteComment = (req, res) => {
   });
 };
 
+const getMessages = (req, res) => {
+  const { username } = req.params;
+  const query = `
+    SELECT * FROM Messages
+    WHERE dstUser="${username}";
+  `;
+  connection.query(query, (err, rows) => {
+    if (err) {
+      res.status(400).json({ status: 'err' });
+      console.log(err);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+};
+
 module.exports = {
   register,
   login,
@@ -518,4 +534,5 @@ module.exports = {
   deleteBlock,
   newComment,
   deleteComment,
+  getMessages,
 };

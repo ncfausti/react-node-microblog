@@ -214,6 +214,36 @@ async function deleteComment(id) {
   return res.json();
 }
 
+async function getMessages(username) {
+  const res = await fetch(`${domain}/api/messages/${username}`, {
+    method: 'GET',
+  });
+  return res.json();
+}
+
+async function publishMessage(srcUser, dstUser, text, audio, video, image) {
+  const res = await fetch(`${domain}/api/message`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      srcUser,
+      dstUser,
+      text,
+      audio,
+      video,
+      image,
+    }),
+  });
+  return res.json();
+}
+
+async function getUsers() {
+  const res = await fetch(`${domain}/api/users`);
+  return res.json();
+}
+
 export default {
   addFollow,
   addBlock,
@@ -235,4 +265,7 @@ export default {
   comment,
   getCommentsByPost,
   deleteComment,
+  getMessages,
+  publishMessage,
+  getUsers,
 };
