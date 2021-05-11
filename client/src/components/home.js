@@ -1,10 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/home.css';
+import { withAuth0 } from '@auth0/auth0-react';
 import FollowingContact from './home/following_contact';
 import BlockingContact from './home/blocking_contact';
 import Post from './post';
 import Agent from './fetches';
+import Room from './Room';
+
+const { connect } = require('twilio-video');
 
 class Home extends React.Component {
   constructor(props) {
@@ -31,6 +35,9 @@ class Home extends React.Component {
       showLoading: false,
       suggestedContact: '',
       suggestions: [],
+      auth0_avatar_ref: '',
+      identity: '',
+      room: null,
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -50,7 +57,16 @@ class Home extends React.Component {
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleUploadMedia = this.handleUploadMedia.bind(this);
     this.appendFeed = this.appendFeed.bind(this);
+<<<<<<< HEAD
     this.getSuggestions = this.getSuggestions.bind(this);
+=======
+
+    this.inputRef = React.createRef();
+    this.joinRoom = this.joinRoom.bind(this);
+    this.returnToLobby = this.returnToLobby.bind(this);
+    this.updateIdentity = this.updateIdentity.bind(this);
+    this.removePlaceholderText = this.removePlaceholderText.bind(this);
+>>>>>>> twilio
   }
 
   componentDidMount() {
@@ -328,19 +344,67 @@ class Home extends React.Component {
     });
   }
 
+  async joinRoom() {
+    try {
+      const response = await fetch(`https://token-service-2480-dev.twil.io/token?identity=${this.state.identity}`);
+      const data = await response.json();
+      const room = await connect(data.accessToken, {
+        name: this.state.username || 'nicks-room', // Use auth0 username here
+        audio: true,
+        video: true,
+      });
+
+      this.setState({ room });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  returnToLobby() {
+    this.setState({ room: null });
+  }
+
+  removePlaceholderText() {
+    this.inputRef.current.placeholder = '';
+  }
+
+  updateIdentity(event) {
+    this.setState({
+      identity: event.target.value,
+    });
+  }
+
   render() {
+    const disabled = this.state.identity === '';
+    const { user } = this.props.auth0;
+    const { name, picture, email } = user;
     return (
       <div id="home-root">
         <div className="cols" id="col1">
-          <img id="col1-avatar" alt="avatar" src={this.state.avatar_ref} />
+          <img id="col1-avatar" alt="avatar" src={picture} />
           <p>MY INFORMATION</p>
           <div id="user-info">
-            <div><span>Nickname: </span>{this.state.nickname}</div>
+            <div><span>Nickname: </span>{this.state.nickname}{name}</div>
             <div><span>Username: </span>{this.state.username}</div>
-            <div><span>Email: </span>{this.state.email}</div>
+            <div><span>Email: </span>{this.state.email}{email}</div>
             <div><span>Registered on: </span>{this.state.registration_date}</div>
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>
+            <div>
+            {
+        this.state.room === null
+          ? <div className="lobby">
+             <input
+             value={this.state.identity}
+             onChange={this.updateIdentity}
+              ref={this.inputRef}
+              onClick={this.removePlaceholderText}
+               placeholder={this.state.username || 'nick'}/>
+            <button disabled={disabled} onClick={this.joinRoom}>Create Room</button>
+          </div>
+          : <Room returnToLobby={this.returnToLobby} room={this.state.room} />
+      }
+            </div>
           </div>
           <button onClick={this.handleMyPosts}>View My Posts Only</button>
           <button onClick={this.handleViewAll}>Explore All Posts</button>
@@ -431,5 +495,5 @@ class Home extends React.Component {
   }
 }
 
-const HomeWithRouter = withRouter(Home);
+const HomeWithRouter = withRouter(withAuth0(Home));
 export default HomeWithRouter;
