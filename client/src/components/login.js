@@ -40,11 +40,17 @@ class Login extends React.Component {
             successDiv.style.display = 'none';
             errDiv.style.display = 'block';
           } else {
-            this.setState({
-              successMsg: 'Login was successfull.',
+            // this.setState({
+            //   successMsg: 'Login was successfull.',
+            // });
+            // successDiv.style.display = 'block';
+            // errDiv.style.display = 'none';
+            this.props.history.push({
+              pathname: '/home',
+              state: {
+                username: this.state.username,
+              },
             });
-            successDiv.style.display = 'block';
-            errDiv.style.display = 'none';
           }
         },
         (error) => {

@@ -54,38 +54,40 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const currentUser = 'feng3116';
-    Agent.getUserByName(currentUser)
-      .then(
-        (result) => {
-          this.setState({
-            userid: result.userid,
-            username: result.username,
-            nickname: result.nickname,
-            email: result.email,
-            summary: result.summary,
-            registration_date: new Date(`${result.registration_date}+00:00`).toLocaleDateString('en-US'),
-            avatar_ref: result.avatar_ref,
-          }, () => {
-            this.getFeed();
-            this.getFollowing();
-            this.getBlocking();
-            this.getSuggestions();
-          });
-        },
-        (error) => {
-          console.log(error);
+    if (this.props.location.state && this.props.location.state.username) {
+      const currentUser = this.props.location.state.username;
+      Agent.getUserByName(currentUser)
+        .then(
+          (result) => {
+            this.setState({
+              userid: result.userid,
+              username: result.username,
+              nickname: result.nickname,
+              email: result.email,
+              summary: result.summary,
+              registration_date: new Date(`${result.registration_date}+00:00`).toLocaleDateString('en-US'),
+              avatar_ref: result.avatar_ref,
+            }, () => {
+              this.getFeed();
+              this.getFollowing();
+              this.getBlocking();
+              this.getSuggestions();
+            });
+          },
+          (error) => {
+            console.log(error);
+          },
+        );
+      this.observer = new IntersectionObserver(
+        this.handleLoading.bind(this),
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: 1.0,
         },
       );
-    this.observer = new IntersectionObserver(
-      this.handleLoading.bind(this),
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1.0,
-      },
-    );
-    this.observer.observe(this.loadingRef);
+      this.observer.observe(this.loadingRef);
+    }
   }
 
   appendFeed(posts) {
