@@ -4,5 +4,16 @@
   },
   "devDependencies": {
     "eslint-plugin-jest": "^24.3.6"
-  }
+  },
+  "name": "server",
+  "version": "1.0.0",
+  "description": "webserver for microblogging app",
+  "main": "server.js",
+  "scripts": {
+    "start": "cd server && node server.js",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

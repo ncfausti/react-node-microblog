@@ -1,15 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import AuthenticationButton from './authentication-button';
 import '../style/login.css';
 import Agent from './fetches';
 
-class Login extends React.Component {
+class ResetPassword extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
+      email: '',
       password: '',
+      repeatedPsw: '',
       errMsg: '',
       successMsg: '',
     };
@@ -17,35 +18,31 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.location.state) {
-      this.setState({
-        successMsg: this.props.location.state.msg,
-      });
-      const successDiv = document.getElementById('successMsg');
-      successDiv.style.display = 'block';
-    }
-  }
-
   handleSubmit(e) {
     e.preventDefault();
-    Agent.login(this.state.username, this.state.password)
+    const errDiv = document.getElementById('errMsg');
+    if (this.state.password != this.state.repeatedPsw) {
+      this.setState({
+        errMsg: 'Your passwords do not match!',
+      });
+      errDiv.style.display = 'block';
+      return;
+    }
+    Agent.resetPassword(this.state.username, this.state.email, this.state.password)
       .then(
         (result) => {
-          const errDiv = document.getElementById('errMsg');
-          const successDiv = document.getElementById('successMsg');
           if (result.status != 'ok') {
             this.setState({
               errMsg: result.msg,
             });
-            successDiv.style.display = 'none';
             errDiv.style.display = 'block';
           } else {
-            this.setState({
-              successMsg: 'Login was successfull.',
+            this.props.history.push({
+              pathname: '/login',
+              state: {
+                msg: '✔ Password reset was successful. Please login using your crendentials.',
+              },
             });
-            successDiv.style.display = 'block';
-            errDiv.style.display = 'none';
           }
         },
         (error) => {
@@ -60,15 +57,12 @@ class Login extends React.Component {
         <div className="topbar">
           <a id="title" href="/">MicroBlog</a>
           <div className="topbar-right">
-            <a id="login-active" href="/login">Login</a>
+            <a id="login" href="/login">Login</a>
             <a id="signup" href="/register">Signup</a>
           </div>
         </div>
         <div id="errMsg">
           <span>{this.state.errMsg}</span>
-        </div>
-        <div id="successMsg">
-          <span>{this.state.successMsg}</span>
         </div>
         <div className="register">
           <form onSubmit={this.handleSubmit}>
@@ -79,20 +73,30 @@ class Login extends React.Component {
               onChange={(e) => {
                 this.setState({ username: e.target.value });
               }}/>
-            <label>Passsword</label>
+            <label>Verify Your Email Address:</label>
+            <input
+              type="text"
+              value={this.state.email}
+              onChange={(e) => {
+                this.setState({ email: e.target.value });
+              }}/>
+            <label>Reset Your Passsword:</label>
             <input
               type="password"
               value={this.state.password}
               onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}/>
-
-            {/* <button type="submit">
-            <a href="/password">Forgot your password?</a>
+            <label>Repeat Your Passsword:</label>
+            <input
+              type="password"
+              value={this.state.repeatedPsw}
+              onChange={(e) => {
+                this.setState({ repeatedPsw: e.target.value });
+              }}/>
             <button type="submit">
-              Login
-            </button> */}
-            <AuthenticationButton />
+              Reset Your Password
+            </button>
           </form>
         </div>
       </div>
@@ -100,5 +104,4 @@ class Login extends React.Component {
   }
 }
 
-const LoginWithRouter = withRouter(Login);
-export default LoginWithRouter;
+export default withRouter(ResetPassword);

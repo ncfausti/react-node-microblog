@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "webserver for microblogging app",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest --coverage --forceExit",
     "start": "node server.js",
