@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import '../style/home.css';
+import { withAuth0 } from '@auth0/auth0-react';
 import FollowingContact from './home/following_contact';
 import BlockingContact from './home/blocking_contact';
 import Post from './post';
@@ -29,6 +30,7 @@ class Home extends React.Component {
       postObjects: [],
       showing: '',
       showLoading: false,
+      auth0_avatar_ref: '',
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -314,15 +316,17 @@ class Home extends React.Component {
   }
 
   render() {
+    const { user } = this.props.auth0;
+    const { name, picture, email } = user;
     return (
       <div id="home-root">
         <div className="cols" id="col1">
-          <img id="col1-avatar" alt="avatar" src={this.state.avatar_ref} />
+          <img id="col1-avatar" alt="avatar" src={picture} />
           <p>MY INFORMATION</p>
           <div id="user-info">
-            <div><span>Nickname: </span>{this.state.nickname}</div>
+            <div><span>Nickname: </span>{this.state.nickname}{name}</div>
             <div><span>Username: </span>{this.state.username}</div>
-            <div><span>Email: </span>{this.state.email}</div>
+            <div><span>Email: </span>{this.state.email}{email}</div>
             <div><span>Registered on: </span>{this.state.registration_date}</div>
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>
@@ -400,5 +404,5 @@ class Home extends React.Component {
   }
 }
 
-const HomeWithRouter = withRouter(Home);
+const HomeWithRouter = withRouter(withAuth0(Home));
 export default HomeWithRouter;

@@ -5,15 +5,16 @@ import {
   Switch,
 } from 'react-router-dom';
 
+import { withAuth0 } from '@auth0/auth0-react';
 import Register from './components/register';
 import Login from './components/login';
 import Messaging from './components/messaging';
 import ResetPassword from './components/reset_password';
 import Home from './components/home';
-
+import ProtectedRoute from './auth/protected-route';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default class App extends React.Component {
+class App extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   render() {
     return (
@@ -27,12 +28,13 @@ export default class App extends React.Component {
                 <Login />
               )}
             />
-            <Route
+            <ProtectedRoute
               exact
               path="/home"
-              render={() => (
-                <Home />
-              )}
+              // render={() => (
+              //   <Home />
+              // )}
+              component={Home}
             />
             <Route
               exact
@@ -68,3 +70,4 @@ export default class App extends React.Component {
     );
   }
 }
+export default withAuth0(App);

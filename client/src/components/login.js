@@ -55,6 +55,8 @@ class Login extends React.Component {
   }
 
   render() {
+    // const { user } = this.props.auth0;
+    // const { name, picture, email } = user;
     return (
       <div className="root">
         <div className="topbar">
