@@ -28,7 +28,7 @@ async function mockUserAction() {
   const username = await driver.wait(until.elementLocated(By.id('username')), 10000);
   await username.sendKeys("feng3116");
   const password = await driver.wait(until.elementLocated(By.id('password')), 10000);
-  await password.sendKeys("1234");
+  await password.sendKeys("123");
   const submit = await driver.wait(until.elementLocated(By.id('submit')), 10000);
   await submit.click();  // return the element contining the value to test
   return driver.wait(until.elementLocated(By.id('home-root')), 10000);
