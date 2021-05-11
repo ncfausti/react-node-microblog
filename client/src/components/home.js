@@ -29,6 +29,8 @@ class Home extends React.Component {
       postObjects: [],
       showing: '',
       showLoading: false,
+      suggestedContact: '',
+      suggestions: [],
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -48,6 +50,7 @@ class Home extends React.Component {
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleUploadMedia = this.handleUploadMedia.bind(this);
     this.appendFeed = this.appendFeed.bind(this);
+    this.getSuggestions = this.getSuggestions.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +70,7 @@ class Home extends React.Component {
             this.getFeed();
             this.getFollowing();
             this.getBlocking();
+            this.getSuggestions();
           });
         },
         (error) => {
@@ -130,14 +134,15 @@ class Home extends React.Component {
     }
   }
 
-  handleFollow() {
-    Agent.getUserByName(this.state.followSearch)
+  handleFollow(name) {
+    Agent.getUserByName(name)
       .then((user) => {
         Agent.addFollow(this.state.userid, user.userid)
           .then(() => {
-            this.setState({ followSearch: '' });
+            this.setState({ followSearch: '', suggestedContact: '' });
             this.getFollowing();
             this.getFeed();
+            this.getSuggestions();
           });
       });
   }
@@ -313,6 +318,14 @@ class Home extends React.Component {
     this.setState({ prevY: y === 0 ? 1e7 : y });
   }
 
+  getSuggestions() {
+    const userlist = [{ username: 'feng' }, { username: 'admin' }, { username: 'feng' }];
+    const suggestions = userlist.map((user, i) => <option key={i}>
+      {user.username}
+    </option>);
+    this.setState({ suggestions });
+  }
+
   render() {
     return (
       <div id="home-root">
@@ -367,7 +380,7 @@ class Home extends React.Component {
           </div>
         </div>
         <div className="cols" id="col3">
-          <div id="contact-title">My Contacts:</div>
+          <div className="contact-title">My Contacts:</div>
           <div id="following">
             <input
             type="text"
@@ -375,7 +388,7 @@ class Home extends React.Component {
             value={this.state.followSearch}
             onChange={(e) => this.setState({ followSearch: e.target.value })}
             />
-            <button onClick={this.handleFollow}>Follow</button>
+            <button onClick={() => this.handleFollow(this.state.followSearch)}>Follow</button>
             <div id="following-list">
               <div>Currently following:</div>
               {this.state.following}
@@ -393,6 +406,22 @@ class Home extends React.Component {
               <div>Currently blocking:</div>
               {this.state.blocking}
             </div>
+          </div>
+          <div className="contact-title">New Contacts for You:</div>
+          <div id="suggestion-container">
+            <input
+              list="suggestions"
+              type="text"
+              placeholder="Suggestions for you"
+              value={this.state.suggestedContact}
+              onChange={(e) => this.setState({ suggestedContact: e.target.value })}
+            />
+            <datalist id="suggestions">
+              {this.state.suggestions}
+            </datalist>
+            <button onClick={() => this.handleFollow(this.state.suggestedContact)}>
+              Follow
+            </button>
           </div>
         </div>
       </div>
