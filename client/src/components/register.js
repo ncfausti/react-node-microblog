@@ -73,14 +73,14 @@ class Register extends React.Component {
               value={this.state.username}
               onChange={(e) => {
                 this.setState({ username: e.target.value });
-              }}/>
+              }} />
             <label>Passsword</label>
             <input
               type="password"
               value={this.state.password}
               onChange={(e) => {
                 this.setState({ password: e.target.value });
-              }}/>
+              }} />
             <label>Email</label>
             <input
               type="text"
@@ -88,7 +88,7 @@ class Register extends React.Component {
               value={this.state.email}
               onChange={(e) => {
                 this.setState({ email: e.target.value });
-              }}/>
+              }} />
             <label>Nickname</label>
             <input
               type="text"
@@ -96,7 +96,7 @@ class Register extends React.Component {
               value={this.state.nickname}
               onChange={(e) => {
                 this.setState({ nickname: e.target.value });
-              }}/>
+              }} />
             <button type="submit">
               Register
             </button>

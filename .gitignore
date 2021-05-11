@@ -1,5 +1,5 @@
-# dependencies
-server/node_modules/
+node_modules/
+yarn.lock
 client/node_modules/
 functional-testing/node_modules/
 /.pnp
@@ -30,3 +30,4 @@ yarn-error.log*
 server/coverage/
 client/coverage/
 
+server/node_modules/

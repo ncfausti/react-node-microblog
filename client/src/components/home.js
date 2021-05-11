@@ -33,11 +33,11 @@ class Home extends React.Component {
       postObjects: [],
       showing: '',
       showLoading: false,
-      suggestedContact: '',
-      suggestions: [],
       auth0_avatar_ref: '',
       identity: '',
       room: null,
+      suggestedContact: '',
+      suggestions: [],
     };
 
     this.handleResetPsw = this.handleResetPsw.bind(this);
@@ -57,12 +57,12 @@ class Home extends React.Component {
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleUploadMedia = this.handleUploadMedia.bind(this);
     this.appendFeed = this.appendFeed.bind(this);
-    this.getSuggestions = this.getSuggestions.bind(this);
     this.inputRef = React.createRef();
     this.joinRoom = this.joinRoom.bind(this);
     this.returnToLobby = this.returnToLobby.bind(this);
     this.updateIdentity = this.updateIdentity.bind(this);
     this.removePlaceholderText = this.removePlaceholderText.bind(this);
+    this.getSuggestions = this.getSuggestions.bind(this);
   }
 
   componentDidMount() {
@@ -333,21 +333,12 @@ class Home extends React.Component {
     this.setState({ prevY: y === 0 ? 1e7 : y });
   }
 
-  getSuggestions() {
-    Agent.getContactSuggestions(this.state.userid).then((res) => {
-      const suggestions = res.map((user, i) => <option key={i}>
-        {user.username}
-      </option>);
-      this.setState({ suggestions });
-    });
-  }
-
   async joinRoom() {
     try {
       const response = await fetch(`https://token-service-2480-dev.twil.io/token?identity=${this.state.identity}`);
       const data = await response.json();
       const room = await connect(data.accessToken, {
-        name: this.state.username || 'nicks-room', // Use auth0 username here
+        name: 'test-room',
         audio: true,
         video: true,
       });
@@ -372,19 +363,26 @@ class Home extends React.Component {
     });
   }
 
+  getSuggestions() {
+    Agent.getContactSuggestions(this.state.userid).then((res) => {
+      const suggestions = res.map((user, i) => <option key={i}>
+        {user.username}
+      </option>);
+      this.setState({ suggestions });
+    });
+  }
+
   render() {
     const disabled = this.state.identity === '';
-    const { user } = this.props.auth0;
-    const { name, picture, email } = user;
     return (
       <div id="home-root">
         <div className="cols" id="col1">
-          <img id="col1-avatar" alt="avatar" src={picture} />
+          <img id="col1-avatar" alt="avatar" src={this.state.avatar_ref} />
           <p>MY INFORMATION</p>
           <div id="user-info">
-            <div><span>Nickname: </span>{this.state.nickname}{name}</div>
+            <div><span>Nickname: </span>{this.state.nickname}</div>
             <div><span>Username: </span>{this.state.username}</div>
-            <div><span>Email: </span>{this.state.email}{email}</div>
+            <div><span>Email: </span>{this.state.email}</div>
             <div><span>Registered on: </span>{this.state.registration_date}</div>
             <div><span>Summary:</span></div>
             <div>{this.state.summary}</div>
@@ -397,8 +395,8 @@ class Home extends React.Component {
              onChange={this.updateIdentity}
               ref={this.inputRef}
               onClick={this.removePlaceholderText}
-               placeholder={this.state.username || 'nick'}/>
-            <button disabled={disabled} onClick={this.joinRoom}>Create Room</button>
+               placeholder={"What's your name?"}/>
+            <button disabled={disabled} onClick={this.joinRoom}>Join Room</button>
           </div>
           : <Room returnToLobby={this.returnToLobby} room={this.state.room} />
       }
