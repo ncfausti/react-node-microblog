@@ -79,6 +79,7 @@ class Login extends React.Component {
           <form onSubmit={this.handleSubmit}>
             <label>Username</label>
             <input
+              id="username"
               type="text"
               value={this.state.username}
               onChange={(e) => {
@@ -86,13 +87,14 @@ class Login extends React.Component {
               }} />
             <label>Passsword</label>
             <input
+              id="password"
               type="password"
               value={this.state.password}
               onChange={(e) => {
                 this.setState({ password: e.target.value });
               }} />
             <a href="/password">Forgot your password?</a>
-            <button type="submit">
+            <button type="submit" id={'submit'}>
               Login
             </button>
           </form>

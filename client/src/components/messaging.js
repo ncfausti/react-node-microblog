@@ -5,7 +5,7 @@ import Agent from './fetches';
 
 const bucketName = 'cis577-messages';
 
-const Messaging = () => {
+const Messaging = ({ state }) => {
   const [messages, setMessages] = useState([]);
   const [sentMessages, setSentMessages] = useState([]);
   const [messageType, setMessageType] = useState('text');
@@ -15,6 +15,7 @@ const Messaging = () => {
   const [video, setVideo] = useState();
   const [image, setImage] = useState();
   useEffect(() => {
+    console.log(state);
     window.onclick = (event) => {
       if (event.target == document.getElementById('messagingModal')) {
         document.getElementById('messagingModal').style.display = 'text';

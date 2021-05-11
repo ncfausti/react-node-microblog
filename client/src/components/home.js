@@ -402,7 +402,14 @@ class Home extends React.Component {
       }
             </div>
           </div>
-          <button onClick={() => { window.location.href = '/messaging'; }}>Private Message </button>
+          <button onClick={() => {
+            this.props.history.push({
+              pathname: '/messaging',
+              state: {
+                username: this.state.username,
+              },
+            });
+          }}>Private Message </button>
           <button onClick={this.handleMyPosts}>View My Posts Only</button>
           <button onClick={this.handleViewAll}>Explore All Posts</button>
           <button onClick={this.handleLogout} id="logout-btn">Log Out</button>

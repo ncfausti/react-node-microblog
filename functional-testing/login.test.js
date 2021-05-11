@@ -23,15 +23,15 @@ afterAll(async () => {
 // use the driver to mock user's actions
 async function mockUserAction() {
   // open the URL
-  driver.wait(until.urlIs('http://localhost:3000/messaging'));
-  await driver.get('http://localhost:3000/messaging');
-  const button = await driver.wait(until.elementLocated(By.id('msgModalBtn')), 10000);
-  await button.click();
-  const dstSelector = await driver.wait(until.elementLocated(By.id('text')), 10000);
-  await dstSelector.sendKeys("Some Sample Text Here");
-  const sendMsgButton = await driver.wait(until.elementLocated(By.id('sendMsgBtn')), 10000);
-  await sendMsgButton.click();  // return the element contining the value to test
-  return driver.wait(until.elementLocated(By.id('sentMessages')), 10000);
+  driver.wait(until.urlIs('http://localhost:3000'));
+  await driver.get('http://localhost:3000');
+  const username = await driver.wait(until.elementLocated(By.id('username')), 10000);
+  await username.sendKeys("feng3116");
+  const password = await driver.wait(until.elementLocated(By.id('password')), 10000);
+  await password.sendKeys("1234");
+  const submit = await driver.wait(until.elementLocated(By.id('submit')), 10000);
+  await submit.click();  // return the element contining the value to test
+  return driver.wait(until.elementLocated(By.id('home-root')), 10000);
 }
 
 it('test webpage updated correctly', async () => {
