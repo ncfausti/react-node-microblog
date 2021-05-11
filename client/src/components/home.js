@@ -57,16 +57,12 @@ class Home extends React.Component {
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleUploadMedia = this.handleUploadMedia.bind(this);
     this.appendFeed = this.appendFeed.bind(this);
-<<<<<<< HEAD
     this.getSuggestions = this.getSuggestions.bind(this);
-=======
-
     this.inputRef = React.createRef();
     this.joinRoom = this.joinRoom.bind(this);
     this.returnToLobby = this.returnToLobby.bind(this);
     this.updateIdentity = this.updateIdentity.bind(this);
     this.removePlaceholderText = this.removePlaceholderText.bind(this);
->>>>>>> twilio
   }
 
   componentDidMount() {
