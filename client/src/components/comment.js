@@ -21,7 +21,6 @@ export default class Comment extends React.Component {
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => this.props.changeReplyingto(this.props.username)}>Reply</Dropdown.Item>
               {this.props.userid === this.props.viewerid && <Dropdown.Divider />}
-              {/* {this.props.userid === this.props.viewerid && <Dropdown.Item onClick={() => this.props.delete(this.props.postid)}>Edit this comment</Dropdown.Item>} */}
               {this.props.userid === this.props.viewerid && <Dropdown.Item onClick={() => this.props.delete(this.props.commentid)}>Delete this comment</Dropdown.Item>}
             </Dropdown.Menu>
           </Dropdown>

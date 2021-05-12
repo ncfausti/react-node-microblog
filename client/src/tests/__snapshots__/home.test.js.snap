@@ -51,7 +51,30 @@ exports[`Page matches snapshot 1`] = `
       <div>
         
       </div>
+      <div>
+        <div
+          className="lobby"
+        >
+          <input
+            onChange={[Function]}
+            onClick={[Function]}
+            placeholder="What's your name?"
+            value=""
+          />
+          <button
+            disabled={true}
+            onClick={[Function]}
+          >
+            Join Room
+          </button>
+        </div>
+      </div>
     </div>
+    <button
+      onClick={[Function]}
+    >
+      Private Message 
+    </button>
     <button
       onClick={[Function]}
     >

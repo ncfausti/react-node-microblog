@@ -1,4 +1,3 @@
-const { json } = require('express');
 const mysql = require('mysql');
 const config = require('./db-config.js');
 

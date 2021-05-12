@@ -4,11 +4,10 @@ const cors = require('cors');
 const express = require('express');
 const path = require('path');
 const expressSession = require('express-session');
-const passport = require('passport');
-const Auth0Strategy = require('passport-auth0');
 const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
 const mysql = require('mysql');
+require('twilio');
 const config = require('./db-config.js');
 
 config.connectionLimit = 20;
@@ -22,7 +21,6 @@ const bucketName = 'cis577-messages';
 const upload = multer({ dest: 'uploads/' });
 
 require('dotenv').config();
-const { Twilio } = require('twilio');
 const routes = require('./routes.js');
 // const authRouter = require('./auth');
 

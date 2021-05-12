@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`webpage correctly handles submit & shows msg from server Page matches snapshot 1`] = `
+<div
+  className="root"
+>
+  <div
+    className="topbar"
+  >
+    <a
+      href="/"
+      id="title"
+    >
+      MicroBlog
+    </a>
+    <div
+      className="topbar-right"
+    >
+      <a
+        href="/login"
+        id="login"
+      >
+        Login
+      </a>
+      <a
+        href="/register"
+        id="signup-active"
+      >
+        Signup
+      </a>
+    </div>
+  </div>
+  <div
+    id="errMsg"
+  >
+    <span>
+      
+    </span>
+  </div>
+  <div
+    className="register"
+  >
+    <form
+      onSubmit={[Function]}
+    >
+      <label>
+        Username
+      </label>
+      <input
+        onChange={[Function]}
+        type="text"
+        value=""
+      />
+      <label>
+        Passsword
+      </label>
+      <input
+        onChange={[Function]}
+        type="password"
+        value=""
+      />
+      <label>
+        Email
+      </label>
+      <input
+        onChange={[Function]}
+        placeholder="Optional"
+        type="text"
+        value=""
+      />
+      <label>
+        Nickname
+      </label>
+      <input
+        onChange={[Function]}
+        placeholder="Optional"
+        type="text"
+        value=""
+      />
+      <button
+        type="submit"
+      >
+        Register
+      </button>
+    </form>
+  </div>
+</div>
+`;

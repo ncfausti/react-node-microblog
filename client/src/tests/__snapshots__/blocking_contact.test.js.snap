@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page matches snapshot 1`] = `
+<div
+  className="blocking-contact"
+>
+  <span
+    style={
+      Object {
+        "fontWeight": "bold",
+      }
+    }
+  >
+    feng
+  </span>
+  <button
+    onClick={[Function]}
+    style={
+      Object {
+        "border": "none",
+        "borderRadius": "3px",
+        "float": "right",
+        "fontSize": "11px",
+      }
+    }
+  >
+    Unblock
+  </button>
+</div>
+`;

@@ -42,16 +42,22 @@ describe('Test /login endpoint', () => {
 });
 
 describe('Test User model endpoints', () => {
-  it('Get user', () => request.get('/api/user/test')
+  it('Get user by name', () => request.get('/api/user/test')
     .expect(200)
     .then((response) => {
       expect(JSON.parse(response.text)).toStrictEqual(testUser);
     }));
 
-  it('Get user', () => request.get('/api/contact-suggestions/31')
+  it('Get contact suggestion', () => request.get('/api/contact-suggestions/31')
     .expect(200)
     .then((response) => {
       expect(JSON.parse(response.text)).toHaveLength(5);
+    }));
+
+  it('Get all users', () => request.get('/api/users')
+    .expect(200)
+    .then((response) => {
+      expect(JSON.parse(response.text).length).toBeGreaterThan(10);
     }));
 });
 
@@ -82,25 +88,19 @@ describe('Test Post & Comment model endpoints', () => {
 });
 
 describe('Test hide, follow, block', () => {
-  it('Get comments for a post', () => request.get('/api/following/31')
+  it('Get following for a user', () => request.get('/api/following/31')
     .expect(200)
     .then((response) => {
-      expect(JSON.parse(response.text).length).toStrictEqual(3);
+      expect(JSON.parse(response.text).length).toStrictEqual(4);
     }));
 
-  it('Get comments for a post', () => request.get('/api/hide-by-post/5')
+  it('Get hide for a post', () => request.get('/api/hide-by-post/5')
     .expect(200)
     .then((response) => {
       expect(JSON.parse(response.text).length).toStrictEqual(1);
     }));
 
-  it('Get comments for a post', () => request.get('/api/following/31')
-    .expect(200)
-    .then((response) => {
-      expect(JSON.parse(response.text).length).toStrictEqual(3);
-    }));
-
-  it('Get comments for a post', () => request.get('/api/blocking/31')
+  it('Get blocking for a user', () => request.get('/api/blocking/31')
     .expect(200)
     .then((response) => {
       expect(JSON.parse(response.text).length).toStrictEqual(1);

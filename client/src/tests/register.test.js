@@ -4,6 +4,7 @@ import {
   fireEvent, render, waitFor, screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import renderer from 'react-test-renderer';
 import 'isomorphic-fetch';
 import fetchMock from 'jest-fetch-mock';
 import Register from '../components/register';
@@ -44,5 +45,13 @@ describe('webpage correctly handles submit & shows msg from server', () => {
         },
       });
     });
+  });
+
+  test('Page matches snapshot', () => {
+    const component = renderer.create(
+      <Register.WrappedComponent />,
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
   });
 });
